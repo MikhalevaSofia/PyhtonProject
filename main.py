@@ -4,19 +4,15 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-import csv
-
 import matplotlib.pyplot as plt
+import pandas as pd
 
-
-def get_data_plot_from_file():
-    with open('resources/US1.AAPL_210224_220224.csv') as file:
-        data = csv.load(file)
-        return data
-adsasd
+df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';',
+                 low_memory=False)
+df['<CLOSE>'] = df['<CLOSE>'].astype(float)
+df['<DATE>'] = pd.to_datetime(arg=df['<DATE>'], infer_datetime_format=format('%d.%m.%Y'))
 plt.title('График изменения цен акций')
-plt.xlable('Дата')
-plt.ylable('Цена')
-plt.plot(*data_plot(), lable='Цена')
-plt.legend()
+plt.xlabel('Дата')
+plt.ylabel('Цена')
+plt.plot(df['<DATE>'], df['<CLOSE>'])
 plt.show()
