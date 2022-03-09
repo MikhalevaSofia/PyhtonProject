@@ -4,11 +4,12 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-import.matplotlib.pyplot as plt
 import csv
 
+import matplotlib.pyplot as plt
 
-def get_data_plot():
+
+def get_data_plot_from_file():
     with open('US1.AAPL_210224_2202224.csv') as file:
         data = csv.load(file)
         return data
