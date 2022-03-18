@@ -18,6 +18,11 @@ df['<DATE>'] = pd.to_datetime(arg=df['<DATE>'], infer_datetime_format=format('%d
 calc = pd.DataFrame()
 
 
+# TODO:
+# 1. Как работать с DataFrame (создание/добавление/удаление/изменение индекса)
+# 2. Как работает функйция range
+# 3. Как работает .loc
+# 4. как работает values.size
 def calc_moving_average(x, days):
     sma1 = pd.DataFrame({'data': []})
     sum = 0.0
