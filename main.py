@@ -19,21 +19,35 @@ calc = pd.DataFrame()
 
 
 def calc_moving_average(x, days):
-    sma1 = pd.DataFrame({'data': []})
+    sma = pd.DataFrame({'data': []})
     sum = 0.0
     i = 0
     for i in range(0, days):
         sum = sum + x.loc[i]
     print(sum)
     for i in range(0, x.values.size + 1 - days):
-        sma1.loc[i + days - 1] = sum / days
+        sma.loc[i + days - 1] = sum / days
         if i <= x.values.size - days - 1:
             sum = sum - x.loc[i] + x.loc[i + days]
-    return sma1
+    return sma
 
 
-
+def calc_momentum(y, days):
+    mom = pd.DataFrame({'data': []})
+    i = 0
+    for i in range(0, y.values.size + 1 - days):
+        mom.loc[i + days - 1] = y.loc[i + days - 1] - y.loc[i]
+    return mom
 
 
 calc['7 days'] = calc_moving_average(df['<CLOSE>'], 7)
+print(calc)
+
+calc['14 days'] = calc_moving_average(df['<CLOSE>'], 14)
+print(calc)
+
+calc['21 days'] = calc_moving_average(df['<CLOSE>'], 21)
+print(calc)
+
+calc['mom'] = calc_momentum(df['<CLOSE>'], 7)
 print(calc)
