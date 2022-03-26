@@ -45,6 +45,14 @@ def calc_momentum(y, days):
     return mom
 
 
+def calc_rate_of_change(z, days):
+    roc = pd.DataFrame({'data': []})
+    i = 0
+    for i in range(0, z.values.size + 1 - days):
+        roc.loc[i + days - 1] = z.loc[i + days - 1] / z.loc[i] * 100
+    return roc
+
+
 calc['7 days'] = calc_moving_average(df['<CLOSE>'], 7)
 print(calc)
 
@@ -55,4 +63,7 @@ calc['21 days'] = calc_moving_average(df['<CLOSE>'], 21)
 print(calc)
 
 calc['mom'] = calc_momentum(df['<CLOSE>'], 7)
+print(calc)
+
+calc['roc'] = calc_rate_of_change(df['<CLOSE>'], 7)
 print(calc)
