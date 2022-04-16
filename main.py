@@ -38,19 +38,20 @@ def calc_moving_average(x, days):
             sum = sum - x.loc[i] + x.loc[i + days]
     return sma
 
+
 # TODO: ROC и MOM в 1 функцию
-def calc_momentum(y, days):
-    mom = pd.DataFrame({'data': []})
-    for i in range(0, y.values.size + 1 - days):
-        mom.loc[i + days - 1] = y.loc[i + days - 1] - y.loc[i]
-    return mom
-
-
-def calc_rate_of_change(z, days):
-    roc = pd.DataFrame({'data': []})
-    for i in range(0, z.values.size + 1 - days):
-        roc.loc[i + days - 1] = z.loc[i + days - 1] / z.loc[i] * 100
-    return roc
+# def calc_momentum(y, days):
+#     mom = pd.DataFrame({'data': []})
+#     for i in range(0, y.values.size + 1 - days):
+#         mom.loc[i + days - 1] = y.loc[i + days - 1] - y.loc[i]
+#     return mom
+#
+#
+# def calc_rate_of_change(z, days):
+#     roc = pd.DataFrame({'data': []})
+#     for i in range(0, z.values.size + 1 - days):
+#         roc.loc[i + days - 1] = z.loc[i + days - 1] / z.loc[i] * 100
+#     return roc
 
 
 def calc_growth_for_rsi(w):
@@ -81,13 +82,13 @@ def calc_relative_strength_index(m, days):
 # ВЫЧИСЛЕНИЕ ПРОЦЕНТА D
 def calc_min(s, days):
     mi = pd.DataFrame({'data': []})
-    for i in range(0, s.values.size - days + 1):
-        l = i
-        minimum = s.loc[i]
-        for l in range(l, l + days):
+    for i in range(0, s.values.size - days):
 
-            if s.loc[i + 1] < minimum:
-                minimum = s.loc[i + 1]
+        minimum = s.loc[i]
+        for l in range(i, i + days):
+
+            if s.loc[l + 1] < minimum:
+                minimum = s.loc[l + 1]
 
         mi.loc[i] = minimum
     return mi
@@ -114,13 +115,13 @@ def calc_max(j, days):
     return ma
 
 
-def calc_momentum(y, days):
-    mr = pd.DataFrame()
-    i = 0
-    for i in range(0, y.values.size + 1 - days):
-        mom.loc[i + days - 1, 'mom'] = y.loc[i + days - 1] - y.loc[i]
-        roc.loc[i + days - 1, 'roc'] = y.loc[i + days - 1] / y.loc[i] * 100
-    return [mom, roc]
+# def calc_momentum(y, days):
+#     mr = pd.DataFrame()
+#     i = 0
+#     for i in range(0, y.values.size + 1 - days):
+#         mom.loc[i + days - 1, 'mom'] = y.loc[i + days - 1] - y.loc[i]
+#         roc.loc[i + days - 1, 'roc'] = y.loc[i + days - 1] / y.loc[i] * 100
+#     return [mom, roc]
 
 
 calc['low'] = df['<LOW>']
@@ -141,10 +142,10 @@ calc['21 days'] = calc_moving_average(df['<CLOSE>'], 21)
 #
 # calc['roc'] = calc_rate_of_change(df['<CLOSE>'], 7)
 calc['mi'] = calc_min(df['<LOW>'], 6)
-calc['ma'] = calc_min(df['<HIGH>'], 6)
+# calc['ma'] = calc_min(df['<HIGH>'], 6)
 # calc['mis'] = calc_mins(df['<CLOSE>'], ['mi'])
-momAndRoc = calc_momentum(calc['close'], 7)
-calc['mom'] = momAndRoc['mom']
-calc['roc'] = momAndRoc['roc']
+# momAndRoc = calc_momentum(calc['close'], 7)
+# calc['mom'] = momAndRoc['mom']
+# calc['roc'] = momAndRoc['roc']
 
 print(calc)
