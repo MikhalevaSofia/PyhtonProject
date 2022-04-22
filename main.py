@@ -4,24 +4,18 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
+import matplotlib.pyplot as plt
 import pandas as pd
 
 df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
+calc = pd.DataFrame()
 # TODO: Уже работаем с calc
 # TODO: Поправить замечания по стилю
 # TODO: Дать переменным осознанные нименования
-df['<CLOSE>'] = df['<CLOSE>'].astype(float)
-df['<LOW>'] = df['<LOW>'].astype(float)
-df['<HIGH>'] = df['<HIGH>'].astype(float)
-df['<DATE>'] = pd.to_datetime(arg=df['<DATE>'], infer_datetime_format=format('%d.%m.%Y'))
-# plt.title('График изменения цен закрытия акций')
-# plt.xlabel('Дата')
-# plt.ylabel('Цена')
-# plt.plot(df['<DATE>'], df['<CLOSE>'])
-# plt.show()
-
-calc = pd.DataFrame()
-
+calc['close'] = df['<CLOSE>'].astype(float)
+calc['close'] = df['<LOW>'].astype(float)
+calc['high'] = df['<HIGH>'].astype(float)
+calc['date'] = df['<DATE>']
 
 
 def calc_moving_average(x, days):
@@ -145,9 +139,7 @@ def calc_momentum(y, days):
     return mr
 
 
-calc['low'] = df['<LOW>']
-calc['high'] = df['<HIGH>']
-calc['close'] = df['<CLOSE>']
+
 
 calc['gr'] = calc_growth_for_rsi(df['<CLOSE>'])
 
@@ -171,3 +163,27 @@ calc['mom'] = momAndRoc['mom']
 calc['roc'] = momAndRoc['roc']
 
 print(calc)
+fig = plt.figure()
+plt.subplot(2, 1, 1)
+plt.title('График скользящих средних')
+plt.xlabel('Дата')
+plt.ylabel('Цена')
+
+plt.plot(calc['date'], calc['close'])
+
+plt.plot(calc['7 days'])
+plt.plot(calc['14 days'])
+plt.plot(calc['21 days'])
+# plt.xticks(rotation = 45)
+plt.grid()
+plt.xaxis.set_major_locator(ticker.MultipleLocator(58))
+
+fig.autofmt_xdate()
+
+plt.subplot(2, 1, 2)
+plt.title('График MOM')
+plt.xlabel('Дата')
+plt.ylabel('Цена')
+plt.plot(calc['date'], calc['mom'])
+plt.show()
+plt.grid()
