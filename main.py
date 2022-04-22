@@ -144,6 +144,16 @@ def calc_r(t, e, k, days):
     return r
 
 
+def calc_k(t, e, u, days):
+    k = pd.DataFrame({'data': []})
+    for i in range(0, t.values.size - days + 1):
+        minForR = 0.0
+        maxForR = 0.0
+        minForR = t.iloc[i:(i + days)].min()
+        maxForR = e.iloc[i:(i + days)].max()
+        k.loc[i + days - 1] = 100 * (u.loc[i + days - 1] - minForR) / (maxForR - minForR)
+    return k
+
 # def calc_momentum(y, days):
 #     mr = pd.DataFrame()
 #     i = 0
@@ -176,6 +186,7 @@ calc['cl'] = calc_cl(df['<CLOSE>'], calc['mi'])
 calc['hl'] = calc_hl(calc['ma'], calc['mi'])
 calc['d'] = calc_d(calc['cl'], calc['hl'])
 calc['r'] = calc_r(df['<LOW>'], df['<HIGH>'], df['<CLOSE>'], 7)
+calc['k'] = calc_k(df['<LOW>'], df['<HIGH>'], df['<CLOSE>'], 7)
 # momAndRoc = calc_momentum(calc['close'], 7)
 # calc['mom'] = momAndRoc['mom']
 # calc['roc'] = momAndRoc['roc']
