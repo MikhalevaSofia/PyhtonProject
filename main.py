@@ -20,11 +20,7 @@ df['<DATE>'] = pd.to_datetime(arg=df['<DATE>'], infer_datetime_format=format('%d
 calc = pd.DataFrame()
 
 
-# TODO:
-# 1. Как работать с DataFrame (создание/добавление/удаление/изменение индекса)
-# 2. Как работает функйция range
-# 3. Как работает .loc
-# 4. как работает values.size
+
 def calc_moving_average(x, days):
     sma = pd.DataFrame({'data': []})
     sum = 0.0
@@ -39,19 +35,7 @@ def calc_moving_average(x, days):
     return sma
 
 
-# TODO: ROC и MOM в 1 функцию
-# def calc_momentum(y, days):
-#     mom = pd.DataFrame({'data': []})
-#     for i in range(0, y.values.size + 1 - days):
-#         mom.loc[i + days - 1] = y.loc[i + days - 1] - y.loc[i]
-#     return mom
-#
-#
-# def calc_rate_of_change(z, days):
-#     roc = pd.DataFrame({'data': []})
-#     for i in range(0, z.values.size + 1 - days):
-#         roc.loc[i + days - 1] = z.loc[i + days - 1] / z.loc[i] * 100
-#     return roc
+
 
 
 def calc_growth_for_rsi(w):
@@ -154,13 +138,14 @@ def calc_k(t, e, u, days):
         k.loc[i + days - 1] = 100 * (u.loc[i + days - 1] - minForR) / (maxForR - minForR)
     return k
 
-# def calc_momentum(y, days):
-#     mr = pd.DataFrame()
-#     i = 0
-#     for i in range(0, y.values.size + 1 - days):
-#         mr.loc[i + days - 1, 'mom'] = y.loc[i + days - 1] - y.loc[i]
-#         mr.loc[i + days - 1, 'roc'] = y.loc[i + days - 1] / y.loc[i] * 100
-#     return mr
+
+def calc_momentum(y, days):
+    mr = pd.DataFrame()
+    i = 0
+    for i in range(0, y.values.size + 1 - days):
+        mr.loc[i + days - 1, 'mom'] = y.loc[i + days - 1] - y.loc[i]
+        mr.loc[i + days - 1, 'roc'] = y.loc[i + days - 1] / y.loc[i] * 100
+    return mr
 
 
 calc['low'] = df['<LOW>']
@@ -177,9 +162,6 @@ calc['14 days'] = calc_moving_average(df['<CLOSE>'], 14)
 
 calc['21 days'] = calc_moving_average(df['<CLOSE>'], 21)
 
-# calc['mom'] = calc_momentum(df['<CLOSE>'], 7)
-#
-# calc['roc'] = calc_rate_of_change(df['<CLOSE>'], 7)
 calc['mi'] = calc_min(df['<LOW>'], 6)
 calc['ma'] = calc_max(df['<HIGH>'], 6)
 calc['cl'] = calc_cl(df['<CLOSE>'], calc['mi'])
@@ -187,8 +169,8 @@ calc['hl'] = calc_hl(calc['ma'], calc['mi'])
 calc['d'] = calc_d(calc['cl'], calc['hl'])
 calc['r'] = calc_r(df['<LOW>'], df['<HIGH>'], df['<CLOSE>'], 7)
 calc['k'] = calc_k(df['<LOW>'], df['<HIGH>'], df['<CLOSE>'], 7)
-# momAndRoc = calc_momentum(calc['close'], 7)
-# calc['mom'] = momAndRoc['mom']
-# calc['roc'] = momAndRoc['roc']
+momAndRoc = calc_momentum(calc['close'], 7)
+calc['mom'] = momAndRoc['mom']
+calc['roc'] = momAndRoc['roc']
 
 print(calc)
