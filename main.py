@@ -7,6 +7,9 @@
 import pandas as pd
 
 df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
+# TODO: Уже работаем с calc
+# TODO: Поправить замечания по стилю
+# TODO: Дать переменным осознанные нименования
 df['<CLOSE>'] = df['<CLOSE>'].astype(float)
 df['<LOW>'] = df['<LOW>'].astype(float)
 df['<HIGH>'] = df['<HIGH>'].astype(float)
@@ -112,16 +115,13 @@ def calc_d(t, e):
         s1 = t.loc[i] + t.loc[i + 1] + t.loc[i + 2]
         s2 = e.loc[i] + e.loc[i + 1] + e.loc[i + 2]
         d.loc[i + 2] = (s1 / s2) * 100
-        s1 = 0.0
-        s2 = 0.0
     return d
 
 
+# TODO: Объединить calc_r и calc_k
 def calc_r(t, e, k, days):
     r = pd.DataFrame({'data': []})
     for i in range(0, t.values.size - days + 1):
-        minForR = 0.0
-        maxForR = 0.0
         minForR = t.iloc[i:(i + days)].min()
         maxForR = e.iloc[i:(i + days)].max()
         r.loc[i + days - 1] = 100 * (maxForR - k.loc[i + days - 1]) / (maxForR - minForR)
@@ -131,8 +131,6 @@ def calc_r(t, e, k, days):
 def calc_k(t, e, u, days):
     k = pd.DataFrame({'data': []})
     for i in range(0, t.values.size - days + 1):
-        minForR = 0.0
-        maxForR = 0.0
         minForR = t.iloc[i:(i + days)].min()
         maxForR = e.iloc[i:(i + days)].max()
         k.loc[i + days - 1] = 100 * (u.loc[i + days - 1] - minForR) / (maxForR - minForR)
@@ -141,7 +139,6 @@ def calc_k(t, e, u, days):
 
 def calc_momentum(y, days):
     mr = pd.DataFrame()
-    i = 0
     for i in range(0, y.values.size + 1 - days):
         mr.loc[i + days - 1, 'mom'] = y.loc[i + days - 1] - y.loc[i]
         mr.loc[i + days - 1, 'roc'] = y.loc[i + days - 1] / y.loc[i] * 100
