@@ -139,6 +139,42 @@ def calc_momentum(y, days):
     return mr
 
 
+def calc_for_momentum(y, days):
+    l = pd.DataFrame({'data': []})
+    for i in range(0, y.values.size + 1 - days):
+        l.loc[i + days - 1] = 0
+    return l
+
+
+def calc_for_rsi_one(y, days):
+    lineSF = pd.DataFrame({'data': []})
+    for i in range(0, y.values.size + 1 - days):
+        lineSF.loc[i + days - 1] = 75
+    return lineSF
+
+
+def calc_for_rsi_two(y, days):
+    lineTF = pd.DataFrame({'data': []})
+    for i in range(0, y.values.size + 1 - days):
+        lineTF.loc[i + days - 1] = 25
+    return lineTF
+
+
+def cross_sma(x, y, days):
+    cs = pd.DataFrame({'data': []})
+    for i in range(0, y.values.size - days):
+        if ((x.loc[i + days - 1] > y.loc[i + days - 1]) and (x.loc[i + days] < y.loc[i + days])) or (
+                abs(x.loc[i + days - 1] - y.loc[i + days - 1]) == 0.5):
+            cs.loc[i + days - 1] = x.loc[i + days - 1]
+    return cs
+
+
+def cross_sma2(x, y, days):
+    cs2 = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size - days):
+        if abs(x.loc[i + days - 1] - y.loc[i + days - 1]) == 0.5:
+            cs2.loc[i + days - 1] = x.loc[i + days - 1]
+    return cs2
 
 
 calc['gr'] = calc_growth_for_rsi(df['<CLOSE>'])
@@ -161,7 +197,11 @@ calc['k'] = calc_k(df['<LOW>'], df['<HIGH>'], df['<CLOSE>'], 7)
 momAndRoc = calc_momentum(calc['close'], 7)
 calc['mom'] = momAndRoc['mom']
 calc['roc'] = momAndRoc['roc']
-
+calc['l'] = calc_for_momentum(calc['close'], 7)
+calc['lineSF'] = calc_for_rsi_one(calc['close'], 7)
+calc['lineTF'] = calc_for_rsi_two(calc['close'], 7)
+calc['cs'] = cross_sma(calc['7 days'], calc['14 days'], 7)
+calc['cs2'] = cross_sma2(calc['21 days'], calc['cs'], 7)
 print(calc)
 fig1 = plt.figure()
 # plt.subplot(3, 1, 1)
@@ -185,6 +225,7 @@ plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['mom'])
 plt.plot(calc['date'], calc['close'])
+plt.plot(calc['date'], calc['l'])
 plt.grid()
 fig2.autofmt_xdate()
 fig2.show()
@@ -206,6 +247,8 @@ plt.title('График RSI')
 plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['rsi'])
+plt.plot(calc['date'], calc['lineSF'])
+plt.plot(calc['date'], calc['lineTF'])
 plt.grid()
 fig4.autofmt_xdate()
 fig4.show()
@@ -231,3 +274,13 @@ plt.grid()
 fig6.autofmt_xdate()
 fig6.show()
 plt.show()
+
+fig7 = plt.figure()
+# plt.subplot(3, 2, 1)
+plt.title('График пересечений средних')
+plt.xlabel('Дата')
+plt.ylabel('Цена')
+plt.plot(calc['date'], calc['cs'])
+plt.grid()
+fig7.autofmt_xdate()
+fig7.show()
