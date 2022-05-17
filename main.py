@@ -177,23 +177,23 @@ def cross_sma2(x, y, days):
     return cs2
 
 
-calc['gr'] = calc_growth_for_rsi(df['<CLOSE>'])
+calc['gr'] = calc_growth_for_rsi(calc['close'])
 
 calc['rsi'] = calc_relative_strength_index(calc['gr'], 6)
 
-calc['7 days'] = calc_moving_average(df['<CLOSE>'], 7)
+calc['7 days'] = calc_moving_average(calc['close'], 7)
 
-calc['14 days'] = calc_moving_average(df['<CLOSE>'], 14)
+calc['14 days'] = calc_moving_average(calc['close'], 14)
 
-calc['21 days'] = calc_moving_average(df['<CLOSE>'], 21)
+calc['21 days'] = calc_moving_average(calc['close'], 21)
 
-calc['mi'] = calc_min(df['<LOW>'], 6)
-calc['ma'] = calc_max(df['<HIGH>'], 6)
-calc['cl'] = calc_cl(df['<CLOSE>'], calc['mi'])
+calc['mi'] = calc_min(calc['low'], 6)
+calc['ma'] = calc_max(calc['high'], 6)
+calc['cl'] = calc_cl(calc['close'], calc['mi'])
 calc['hl'] = calc_hl(calc['ma'], calc['mi'])
 calc['d'] = calc_d(calc['cl'], calc['hl'])
-calc['r'] = calc_r(df['<LOW>'], df['<HIGH>'], df['<CLOSE>'], 7)
-calc['k'] = calc_k(df['<LOW>'], df['<HIGH>'], df['<CLOSE>'], 7)
+calc['r'] = calc_r(calc['low'], calc['high'], calc['close'], 7)
+calc['k'] = calc_k(calc['low'], calc['high'], calc['close'], 7)
 momAndRoc = calc_momentum(calc['close'], 7)
 calc['mom'] = momAndRoc['mom']
 calc['roc'] = momAndRoc['roc']
