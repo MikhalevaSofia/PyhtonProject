@@ -38,6 +38,7 @@ def calc_growth_for_rsi(x):
         growth.loc[i + 1] = x.loc[i + 1] - x.loc[i]
     return growth
 
+
 def calc_relative_strength_index(x, days):
     rsi = pd.DataFrame({'data': []})
     for i in range(1, x.values.size + 1 - days):
@@ -162,7 +163,8 @@ def cross_sma(x, y, days):
     cs = pd.DataFrame({'data': []})
     for i in range(0, y.values.size - days):
         if ((x.loc[i + days - 1] > y.loc[i + days - 1]) and (x.loc[i + days] < y.loc[i + days])) or (
-                abs(x.loc[i + days - 1] - y.loc[i + days - 1]) == 0.5):
+                abs(x.loc[i + days - 1] - y.loc[i + days - 1]) == 0.5) or (
+                (x.loc[i + days - 1] < y.loc[i + days - 1]) and (x.loc[i + days] > y.loc[i + days])):
             cs.loc[i + days - 1] = x.loc[i + days - 1]
     return cs
 
@@ -216,6 +218,7 @@ plt.plot(calc['date'], calc['close'])
 plt.plot(calc['7 days'])
 plt.plot(calc['14 days'])
 plt.plot(calc['21 days'])
+plt.plot(calc['date'], calc['cs'], 'ro')
 plt.grid()
 fig1.autofmt_xdate()
 fig1.show()
@@ -275,14 +278,14 @@ plt.plot(calc['date'], calc['d'])
 plt.grid()
 fig6.autofmt_xdate()
 fig6.show()
-plt.show()
 
 fig7 = plt.figure()
 # plt.subplot(3, 2, 1)
 plt.title('График пересечений средних')
 plt.xlabel('Дата')
 plt.ylabel('Цена')
-plt.plot(calc['date'], calc['cs'])
-plt.grid()
+plt.plot(calc['date'], calc['cs'], 'ro')
+# plt.grid()
 fig7.autofmt_xdate()
 fig7.show()
+plt.show()
