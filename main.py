@@ -13,12 +13,12 @@ calc = pd.DataFrame()
 # TODO: Поправить замечания по стилю
 # TODO: Дать переменным осознанные нименования
 calc['close'] = df['<CLOSE>'].astype(float)
-calc['close'] = df['<LOW>'].astype(float)
+calc['low'] = df['<LOW>'].astype(float)
 calc['high'] = df['<HIGH>'].astype(float)
 calc['date'] = df['<DATE>']
 
 
-def calc_moving_average(x, days):
+def calc_simple_moving_average(x, days):
     sma = pd.DataFrame({'data': []})
     sum = 0.0
 
@@ -32,75 +32,71 @@ def calc_moving_average(x, days):
     return sma
 
 
+def calc_growth_for_rsi(x):
+    growth = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size - 1):
+        growth.loc[i + 1] = x.loc[i + 1] - x.loc[i]
+    return growth
 
 
-
-def calc_growth_for_rsi(w):
-    gr = pd.DataFrame({'data': []})
-    for i in range(0, w.values.size - 1):
-        gr.loc[i + 1] = w.loc[i + 1] - w.loc[i]
-    return gr
-
-
-def calc_relative_strength_index(m, days):
+def calc_relative_strength_index(x, days):
     rsi = pd.DataFrame({'data': []})
     PosSum = 0.0
     NegSum = 0.0
-    for i in range(1, m.values.size + 2 - days):
+    for i in range(1, x.values.size + 2 - days):
         l = i
         for l in range(l, l + days):
 
-            if m.loc[i] > 0:
-                PosSum = PosSum + m.loc[i]
+            if x.loc[i] > 0:
+                PosSum = PosSum + x.loc[i]
             else:
-                if m.loc[i] < 0:
-                    NegSum = NegSum + m.loc[i]
-        grow = PosSum / abs(NegSum)
-        rsi.loc[i + days - 1] = 100 - (100 / (1 + grow))
+                if x.loc[i] < 0:
+                    NegSum = NegSum + x.loc[i]
+        rsi.loc[i + days - 1] = 100 - (100 / (1 + (PosSum / abs(NegSum))))
     return rsi
 
 
 # ВЫЧИСЛЕНИЕ ПРОЦЕНТА D
-def calc_min(s, days):
-    mi = pd.DataFrame({'data': []})
-    for i in range(0, s.values.size - days + 1):
+def calc_min_for_d(x, days):
+    min = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size - days + 1):
 
-        minimum = s.loc[i]
+        minimum = x.loc[i]
         for l in range(i, i + days - 1):
 
-            if s.loc[l + 1] < minimum:
-                minimum = s.loc[l + 1]
+            if x.loc[l + 1] < minimum:
+                minimum = x.loc[l + 1]
 
-        mi.loc[i] = minimum
-    return mi
-
-
-def calc_cl(k, b):
-    cl = pd.DataFrame({'data': []})
-    for i in range(5, k.values.size):
-        cl.loc[i] = k.loc[i] - b.loc[i - 5]
-    return cl
+        min.loc[i] = minimum
+    return min
 
 
-def calc_max(j, days):
-    ma = pd.DataFrame({'data': []})
-    for i in range(0, j.values.size - days + 1):
+def calc_for_d1(x, y):
+    difference1 = pd.DataFrame({'data': []})
+    for i in range(5, x.values.size):
+        difference1.loc[i] = x.loc[i] - y.loc[i - 5]
+    return difference1
 
-        maximum = j.loc[i]
+
+def calc_max_for_d(x, days):
+    max = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size - days + 1):
+
+        maximum = x.loc[i]
         for l in range(i, i + days - 1):
 
-            if j.loc[l + 1] > maximum:
-                maximum = j.loc[l + 1]
+            if x.loc[l + 1] > maximum:
+                maximum = x.loc[l + 1]
 
-        ma.loc[i] = maximum
-    return ma
+        max.loc[i] = maximum
+    return max
 
 
-def calc_hl(h, q):
-    hl = pd.DataFrame({'data': []})
-    for i in range(0, h.values.size):
-        hl.loc[i + 5] = h.loc[i] - q.loc[i]
-    return hl
+def calc_for_d2(x, y):
+    difference2 = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size):
+        difference2.loc[i + 5] = x.loc[i] - y.loc[i]
+    return difference2
 
 
 def calc_d(t, e):
@@ -113,25 +109,26 @@ def calc_d(t, e):
 
 
 # TODO: Объединить calc_r и calc_k
-def calc_r(t, e, k, days):
-    r = pd.DataFrame({'data': []})
-    for i in range(0, t.values.size - days + 1):
-        minForR = t.iloc[i:(i + days)].min()
-        maxForR = e.iloc[i:(i + days)].max()
-        r.loc[i + days - 1] = 100 * (maxForR - k.loc[i + days - 1]) / (maxForR - minForR)
-    return r
+def calc_r_and_k(x, y, z, days):
+    rk = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size - days + 1):
+        minForR = x.iloc[i:(i + days)].min()
+        maxForR = y.iloc[i:(i + days)].max()
+        rk.loc[i + days - 1, 'r'] = 100 * (maxForR - z.loc[i + days - 1]) / (maxForR - minForR)
+        rk.loc[i + days - 1, 'k'] = 100 * (z.loc[i + days - 1] - minForR) / (maxForR - minForR)
+    return rk
 
 
-def calc_k(t, e, u, days):
-    k = pd.DataFrame({'data': []})
-    for i in range(0, t.values.size - days + 1):
-        minForR = t.iloc[i:(i + days)].min()
-        maxForR = e.iloc[i:(i + days)].max()
-        k.loc[i + days - 1] = 100 * (u.loc[i + days - 1] - minForR) / (maxForR - minForR)
-    return k
+# def calc_k(t, e, u, days):
+#     k = pd.DataFrame({'data': []})
+#     for i in range(0, t.values.size - days + 1):
+#         minForR = t.iloc[i:(i + days)].min()
+#         maxForR = e.iloc[i:(i + days)].max()
+#         k.loc[i + days - 1] = 100 * (u.loc[i + days - 1] - minForR) / (maxForR - minForR)
+#     return k
 
 
-def calc_momentum(y, days):
+def calc_mom_and_roc(y, days):
     mr = pd.DataFrame()
     for i in range(0, y.values.size + 1 - days):
         mr.loc[i + days - 1, 'mom'] = y.loc[i + days - 1] - y.loc[i]
@@ -139,25 +136,25 @@ def calc_momentum(y, days):
     return mr
 
 
-def calc_for_momentum(y, days):
-    l = pd.DataFrame({'data': []})
+def line_for_momentum(y, days):
+    line0 = pd.DataFrame({'data': []})
     for i in range(0, y.values.size + 1 - days):
-        l.loc[i + days - 1] = 0
-    return l
+        line0.loc[i + days - 1] = 0
+    return line0
 
 
-def calc_for_rsi_one(y, days):
-    lineSF = pd.DataFrame({'data': []})
+def line75_for_rsi(y, days):
+    line75 = pd.DataFrame({'data': []})
     for i in range(0, y.values.size + 1 - days):
-        lineSF.loc[i + days - 1] = 75
-    return lineSF
+        line75.loc[i + days - 1] = 75
+    return line75
 
 
-def calc_for_rsi_two(y, days):
-    lineTF = pd.DataFrame({'data': []})
+def line25_for_rsi(y, days):
+    line25 = pd.DataFrame({'data': []})
     for i in range(0, y.values.size + 1 - days):
-        lineTF.loc[i + days - 1] = 25
-    return lineTF
+        line25.loc[i + days - 1] = 25
+    return line25
 
 
 def cross_sma(x, y, days):
@@ -177,31 +174,35 @@ def cross_sma2(x, y, days):
     return cs2
 
 
-calc['gr'] = calc_growth_for_rsi(calc['close'])
+calc['growth'] = calc_growth_for_rsi(calc['close'])
 
-calc['rsi'] = calc_relative_strength_index(calc['gr'], 6)
+calc['rsi'] = calc_relative_strength_index(calc['growth'], 6)
 
-calc['7 days'] = calc_moving_average(calc['close'], 7)
+calc['7 days'] = calc_simple_moving_average(calc['close'], 7)
 
-calc['14 days'] = calc_moving_average(calc['close'], 14)
+calc['14 days'] = calc_simple_moving_average(calc['close'], 14)
 
-calc['21 days'] = calc_moving_average(calc['close'], 21)
+calc['21 days'] = calc_simple_moving_average(calc['close'], 21)
 
-calc['mi'] = calc_min(calc['low'], 6)
-calc['ma'] = calc_max(calc['high'], 6)
-calc['cl'] = calc_cl(calc['close'], calc['mi'])
-calc['hl'] = calc_hl(calc['ma'], calc['mi'])
-calc['d'] = calc_d(calc['cl'], calc['hl'])
-calc['r'] = calc_r(calc['low'], calc['high'], calc['close'], 7)
-calc['k'] = calc_k(calc['low'], calc['high'], calc['close'], 7)
-momAndRoc = calc_momentum(calc['close'], 7)
+calc['min'] = calc_min_for_d(calc['low'], 6)
+calc['max'] = calc_max_for_d(calc['high'], 6)
+calc['difference1'] = calc_for_d1(calc['close'], calc['min'])
+calc['difference2'] = calc_for_d2(calc['max'], calc['min'])
+calc['d'] = calc_d(calc['difference1'], calc['difference2'])
+# calc['r'] = calc_r(calc['low'], calc['high'], calc['close'], 7)
+# calc['k'] = calc_k(calc['low'], calc['high'], calc['close'], 7)
+RandK = calc_r_and_k(calc['low'], calc['high'], calc['close'], 7)
+calc['r'] = RandK['r']
+calc['k'] = RandK['k']
+momAndRoc = calc_mom_and_roc(calc['close'], 7)
 calc['mom'] = momAndRoc['mom']
 calc['roc'] = momAndRoc['roc']
-calc['l'] = calc_for_momentum(calc['close'], 7)
-calc['lineSF'] = calc_for_rsi_one(calc['close'], 7)
-calc['lineTF'] = calc_for_rsi_two(calc['close'], 7)
+calc['line0'] = line_for_momentum(calc['close'], 7)
+calc['line75'] = line75_for_rsi(calc['close'], 7)
+calc['line25'] = line25_for_rsi(calc['close'], 7)
 calc['cs'] = cross_sma(calc['7 days'], calc['14 days'], 7)
 calc['cs2'] = cross_sma2(calc['21 days'], calc['cs'], 7)
+
 print(calc)
 fig1 = plt.figure()
 # plt.subplot(3, 1, 1)
@@ -225,7 +226,7 @@ plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['mom'])
 plt.plot(calc['date'], calc['close'])
-plt.plot(calc['date'], calc['l'])
+plt.plot(calc['date'], calc['line0'])
 plt.grid()
 fig2.autofmt_xdate()
 fig2.show()
@@ -247,8 +248,8 @@ plt.title('График RSI')
 plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['rsi'])
-plt.plot(calc['date'], calc['lineSF'])
-plt.plot(calc['date'], calc['lineTF'])
+plt.plot(calc['date'], calc['line75'])
+plt.plot(calc['date'], calc['line25'])
 plt.grid()
 fig4.autofmt_xdate()
 fig4.show()
