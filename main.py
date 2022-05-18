@@ -38,21 +38,22 @@ def calc_growth_for_rsi(x):
         growth.loc[i + 1] = x.loc[i + 1] - x.loc[i]
     return growth
 
-
 def calc_relative_strength_index(x, days):
     rsi = pd.DataFrame({'data': []})
-    PosSum = 0.0
-    NegSum = 0.0
-    for i in range(1, x.values.size + 2 - days):
+    for i in range(1, x.values.size + 1 - days):
         l = i
+        PosSum = 0.0
+        NegSum = 0.0
         for l in range(l, l + days):
-
-            if x.loc[i] > 0:
-                PosSum = PosSum + x.loc[i]
+            if x.loc[l] > 0:
+                PosSum = PosSum + x.loc[l]
             else:
-                if x.loc[i] < 0:
-                    NegSum = NegSum + x.loc[i]
-        rsi.loc[i + days - 1] = 100 - (100 / (1 + (PosSum / abs(NegSum))))
+                if x.loc[l] < 0:
+                    NegSum = NegSum + x.loc[l]
+        if NegSum == 0:
+            rsi.loc[i + days - 1] = 0
+        else:
+            rsi.loc[i + days - 1] = 100 - (100 / (1 + (PosSum / abs(NegSum))))
     return rsi
 
 
