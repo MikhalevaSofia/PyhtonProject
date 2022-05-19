@@ -169,7 +169,23 @@ def cross_sma(x, y, days):
     return cross
 
 
-
+def cross_mom(x, y, days):
+    sb = pd.DataFrame()
+    for i in range(0, x.values.size - days - 1):
+        if x.loc[i + days] == y.loc[i + days]:
+            if x.loc[i + days - 1] < y.loc[i + days + 1]:
+                sb.loc[i + days, 'buy'] = y.loc[i + days]
+            elif x.loc[i + days - 1] > y.loc[i + days + 1]:
+                sb.loc[i + days, 'sell'] = y.loc[i + days]
+        if x.loc[i + days - 1] < 0 and x.loc[i + days] > 0:
+            sb.loc[i + days - 1, 'buy'] = y.loc[i + days]
+        elif x.loc[i + days - 1] > 0 and x.loc[i + days] < 0:
+            sb.loc[i + days - 1, 'sell'] = y.loc[i + days]
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 0:
+            sb.loc[i + days, 'buy'] = x.loc[i + days]
+        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1] and x.loc[i + days] < 0:
+            sb.loc[i + days, 'sell'] = x.loc[i + days]
+    return sb
 
 
 calc['growth'] = calc_growth_for_rsi(calc['close'])
@@ -199,6 +215,9 @@ calc['line25'] = line25_for_rsi(calc['close'], 7)
 calc['cross1'] = cross_sma(calc['7 days'], calc['14 days'], 7)
 calc['cross2'] = cross_sma(calc['7 days'], calc['21 days'], 7)
 calc['cross3'] = cross_sma(calc['14 days'], calc['21 days'], 7)
+sb = cross_mom(calc['mom'], calc['line0'], 7)
+calc['buy'] = sb['buy']
+calc['sell'] = sb['sell']
 
 print(calc)
 fig1 = plt.figure()
@@ -225,8 +244,9 @@ plt.title('График MOM')
 plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['mom'])
-plt.plot(calc['date'], calc['close'])
 plt.plot(calc['date'], calc['line0'])
+plt.plot(calc['date'], calc['buy'], 'ro', color='red')
+plt.plot(calc['date'], calc['sell'], 'ro', color='blue')
 plt.grid()
 fig2.autofmt_xdate()
 fig2.show()
