@@ -160,21 +160,16 @@ def line25_for_rsi(y, days):
 
 
 def cross_sma(x, y, days):
-    cs = pd.DataFrame({'data': []})
+    cross = pd.DataFrame({'data': []})
     for i in range(0, y.values.size - days):
         if ((x.loc[i + days - 1] > y.loc[i + days - 1]) and (x.loc[i + days] < y.loc[i + days])) or (
                 abs(x.loc[i + days - 1] - y.loc[i + days - 1]) == 0.5) or (
                 (x.loc[i + days - 1] < y.loc[i + days - 1]) and (x.loc[i + days] > y.loc[i + days])):
-            cs.loc[i + days - 1] = x.loc[i + days - 1]
-    return cs
+            cross.loc[i + days - 1] = x.loc[i + days - 1]
+    return cross
 
 
-def cross_sma2(x, y, days):
-    cs2 = pd.DataFrame({'data': []})
-    for i in range(0, x.values.size - days):
-        if abs(x.loc[i + days - 1] - y.loc[i + days - 1]) == 0.5:
-            cs2.loc[i + days - 1] = x.loc[i + days - 1]
-    return cs2
+
 
 
 calc['growth'] = calc_growth_for_rsi(calc['close'])
@@ -192,8 +187,6 @@ calc['max'] = calc_max_for_d(calc['high'], 6)
 calc['difference1'] = calc_for_d1(calc['close'], calc['min'])
 calc['difference2'] = calc_for_d2(calc['max'], calc['min'])
 calc['d'] = calc_d(calc['difference1'], calc['difference2'])
-# calc['r'] = calc_r(calc['low'], calc['high'], calc['close'], 7)
-# calc['k'] = calc_k(calc['low'], calc['high'], calc['close'], 7)
 RandK = calc_r_and_k(calc['low'], calc['high'], calc['close'], 7)
 calc['r'] = RandK['r']
 calc['k'] = RandK['k']
@@ -203,8 +196,9 @@ calc['roc'] = momAndRoc['roc']
 calc['line0'] = line_for_momentum(calc['close'], 7)
 calc['line75'] = line75_for_rsi(calc['close'], 7)
 calc['line25'] = line25_for_rsi(calc['close'], 7)
-calc['cs'] = cross_sma(calc['7 days'], calc['14 days'], 7)
-calc['cs2'] = cross_sma2(calc['21 days'], calc['cs'], 7)
+calc['cross1'] = cross_sma(calc['7 days'], calc['14 days'], 7)
+calc['cross2'] = cross_sma(calc['7 days'], calc['21 days'], 7)
+calc['cross3'] = cross_sma(calc['14 days'], calc['21 days'], 7)
 
 print(calc)
 fig1 = plt.figure()
@@ -218,7 +212,9 @@ plt.plot(calc['date'], calc['close'])
 plt.plot(calc['7 days'])
 plt.plot(calc['14 days'])
 plt.plot(calc['21 days'])
-plt.plot(calc['date'], calc['cs'], 'ro')
+plt.plot(calc['date'], calc['cross1'], 'ro')
+plt.plot(calc['date'], calc['cross2'], 'ro')
+plt.plot(calc['date'], calc['cross3'], 'ro')
 plt.grid()
 fig1.autofmt_xdate()
 fig1.show()
@@ -279,13 +275,4 @@ plt.grid()
 fig6.autofmt_xdate()
 fig6.show()
 
-fig7 = plt.figure()
-# plt.subplot(3, 2, 1)
-plt.title('График пересечений средних')
-plt.xlabel('Дата')
-plt.ylabel('Цена')
-plt.plot(calc['date'], calc['cs'], 'ro')
-# plt.grid()
-fig7.autofmt_xdate()
-fig7.show()
 plt.show()
