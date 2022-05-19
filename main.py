@@ -188,6 +188,49 @@ def cross_mom(x, y, days):
     return sb
 
 
+def cross_rsi_buy(x, y, days):
+    cs = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size - days - 1):
+        if x.loc[i + days] == y.loc[i + days] and x.loc[i + days - 1] < y.loc[i + days + 1]:
+            cs.loc[i + days] = y.loc[i + days]
+        if x.loc[i + days - 1] < 25 and x.loc[i + days] > 25:
+            cs.loc[i + days - 1] = y.loc[i + days]
+        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1] and x.loc[i + days] < 25:
+            cs.loc[i + days] = x.loc[i + days]
+    return cs
+
+
+def cross_rsi_sell(x, y, days):
+    cr = pd.DataFrame({'data': []})
+    for i in range(0, x.values.size - days - 1):
+        if x.loc[i + days] == y.loc[i + days] and x.loc[i + days - 1] > y.loc[i + days + 1]:
+            cr.loc[i + days] = y.loc[i + days]
+        if x.loc[i + days - 1] > 75 and x.loc[i + days] < 75:
+            cr.loc[i + days - 1] = y.loc[i + days]
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 75:
+            cr.loc[i + days] = x.loc[i + days]
+    return cr
+
+
+def cross_k_and_r(x, y, days):
+    kr = pd.DataFrame()
+    for i in range(0, x.values.size - days - 1):
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 50:
+            kr.loc[i + days, 'sell'] = x.loc[i + days]
+            kr.loc[i + days, 'buy'] = y.loc[i + days]
+    return kr
+
+
+def cross_d(x, days):
+    d = pd.DataFrame()
+    for i in range(0, x.values.size - days - 1):
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 75:
+            d.loc[i + days, 'sell'] = x.loc[i + days]
+        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1] and x.loc[i + days] < 25:
+            d.loc[i + days, 'buy'] = x.loc[i + days]
+    return d
+
+
 calc['growth'] = calc_growth_for_rsi(calc['close'])
 
 calc['rsi'] = calc_relative_strength_index(calc['growth'], 6)
@@ -216,8 +259,16 @@ calc['cross1'] = cross_sma(calc['7 days'], calc['14 days'], 7)
 calc['cross2'] = cross_sma(calc['7 days'], calc['21 days'], 7)
 calc['cross3'] = cross_sma(calc['14 days'], calc['21 days'], 7)
 sb = cross_mom(calc['mom'], calc['line0'], 7)
-calc['buy'] = sb['buy']
-calc['sell'] = sb['sell']
+calc['buyMom'] = sb['buy']
+calc['sellMom'] = sb['sell']
+calc['buyRsi'] = cross_rsi_buy(calc['rsi'], calc['line25'], 7)
+calc['sellRsi'] = cross_rsi_sell(calc['rsi'], calc['line75'], 7)
+kr = cross_k_and_r(calc['k'], calc['r'], 7)
+calc['buyKR'] = kr['buy']
+calc['sellKR'] = kr['sell']
+kr = cross_d(calc['d'], 7)
+calc['buyD'] = kr['buy']
+calc['sellD'] = kr['sell']
 
 print(calc)
 fig1 = plt.figure()
@@ -245,8 +296,8 @@ plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['mom'])
 plt.plot(calc['date'], calc['line0'])
-plt.plot(calc['date'], calc['buy'], 'ro', color='red')
-plt.plot(calc['date'], calc['sell'], 'ro', color='blue')
+plt.plot(calc['date'], calc['buyMom'], 'ro', color='red')
+plt.plot(calc['date'], calc['sellMom'], 'ro', color='blue')
 plt.grid()
 fig2.autofmt_xdate()
 fig2.show()
@@ -270,6 +321,8 @@ plt.ylabel('Цена')
 plt.plot(calc['date'], calc['rsi'])
 plt.plot(calc['date'], calc['line75'])
 plt.plot(calc['date'], calc['line25'])
+plt.plot(calc['date'], calc['buyRsi'], 'ro', color='red')
+plt.plot(calc['date'], calc['sellRsi'], 'ro', color='blue')
 plt.grid()
 fig4.autofmt_xdate()
 fig4.show()
@@ -281,6 +334,8 @@ plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['k'])
 plt.plot(calc['date'], calc['r'])
+plt.plot(calc['date'], calc['buyKR'], 'ro', color='red')
+plt.plot(calc['date'], calc['sellKR'], 'ro', color='blue')
 plt.grid()
 fig5.autofmt_xdate()
 fig5.show()
@@ -291,6 +346,8 @@ plt.title('График стохастических линий: процент 
 plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['d'])
+plt.plot(calc['date'], calc['buyD'], 'ro', color='red')
+plt.plot(calc['date'], calc['sellD'], 'ro', color='blue')
 plt.grid()
 fig6.autofmt_xdate()
 fig6.show()
