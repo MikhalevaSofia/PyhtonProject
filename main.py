@@ -121,6 +121,7 @@ def calc_r_and_k(x, y, z, days):
         rk.loc[i + days - 1, 'k'] = 100 * (z.loc[i + days - 1] - minForR) / (maxForR - minForR)
     return rk
 
+
 def calc_mom_and_roc(y, days):
     mr = pd.DataFrame()
     for i in range(0, y.values.size + 1 - days):
@@ -273,6 +274,7 @@ calc['buyD'] = kr['buy']
 calc['sellD'] = kr['sell']
 
 print(calc)
+# TODO: Сделать легенду
 fig1 = plt.figure()
 # plt.subplot(3, 1, 1)
 plt.title('График скользящих средних')
@@ -281,12 +283,13 @@ plt.ylabel('Цена')
 
 plt.plot(calc['date'], calc['close'])
 
-plt.plot(calc['7 days'])
-plt.plot(calc['14 days'])
-plt.plot(calc['21 days'])
+plt.plot(calc['7 days'], label='7 дней')
+plt.plot(calc['14 days'], label='14 дней')
+plt.plot(calc['21 days'], label='21 день')
 plt.plot(calc['date'], calc['cross1'], 'ro')
 plt.plot(calc['date'], calc['cross2'], 'ro')
 plt.plot(calc['date'], calc['cross3'], 'ro')
+fig1.legend(['Цена закрытия', '7 дней', '14 дней', '21 дней', 'Сигналы на покупку/продажу'])
 plt.grid()
 fig1.autofmt_xdate()
 fig1.show()
@@ -294,7 +297,7 @@ fig1.show()
 fig2 = plt.figure()
 # plt.subplot(3, 1, 2)
 plt.title('График MOM')
-plt.xlabel('Дата')
+plt.xlabel('Дата')  # TODO: Это скорость изменения цены
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['mom'])
 plt.plot(calc['date'], calc['line0'])
@@ -307,10 +310,10 @@ fig2.show()
 fig3 = plt.figure()
 # plt.subplot(3, 1, 3)
 plt.title('График ROC')
-plt.xlabel('Дата')
+plt.xlabel('Дата')  # TODO: Это прирост
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['roc'])
-plt.plot(calc['date'], calc['close'])
+# plt.plot(calc['date'], calc['close'])
 plt.plot(calc['date'], calc['line100'])
 plt.grid()
 fig3.autofmt_xdate()
