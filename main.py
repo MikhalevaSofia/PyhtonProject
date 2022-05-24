@@ -159,6 +159,13 @@ def line25_for_rsi(y, days):
     return line25
 
 
+def line100_for_roc(y, days):
+    line100 = pd.DataFrame({'data': []})
+    for i in range(0, y.values.size + 1 - days):
+        line100.loc[i + days - 1] = 100
+    return line100
+
+
 def cross_sma(x, y, days):
     cross = pd.DataFrame({'data': []})
     for i in range(0, y.values.size - days):
@@ -255,6 +262,7 @@ calc['roc'] = momAndRoc['roc']
 calc['line0'] = line_for_momentum(calc['close'], 7)
 calc['line75'] = line75_for_rsi(calc['close'], 7)
 calc['line25'] = line25_for_rsi(calc['close'], 7)
+calc['line100'] = line100_for_roc(calc['close'], 7)
 calc['cross1'] = cross_sma(calc['7 days'], calc['14 days'], 7)
 calc['cross2'] = cross_sma(calc['7 days'], calc['21 days'], 7)
 calc['cross3'] = cross_sma(calc['14 days'], calc['21 days'], 7)
@@ -309,6 +317,7 @@ plt.xlabel('Дата')
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['roc'])
 plt.plot(calc['date'], calc['close'])
+plt.plot(calc['date'], calc['line100'])
 plt.grid()
 fig3.autofmt_xdate()
 fig3.show()
