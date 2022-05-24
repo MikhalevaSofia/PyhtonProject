@@ -180,9 +180,9 @@ def cross_mom(x, y, days):
             sb.loc[i + days - 1, 'buy'] = y.loc[i + days]
         elif x.loc[i + days - 1] > 0 and x.loc[i + days] < 0:
             sb.loc[i + days - 1, 'sell'] = y.loc[i + days]
-        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 0:
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] >= x.loc[i + days + 1] and x.loc[i + days] > 0:
             sb.loc[i + days, 'buy'] = x.loc[i + days]
-        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1] and x.loc[i + days] < 0:
+        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] <= x.loc[i + days + 1] and x.loc[i + days] < 0:
             sb.loc[i + days, 'sell'] = x.loc[i + days]
     return sb
 
@@ -289,13 +289,13 @@ plt.ylabel('Цена')
 
 plt.plot(calc['date'], calc['close'])
 
-plt.plot(calc['7 days'], label='7 дней')
-plt.plot(calc['14 days'], label='14 дней')
-plt.plot(calc['21 days'], label='21 день')
+plt.plot(calc['7 days'])
+plt.plot(calc['14 days'])
+plt.plot(calc['21 days'])
 plt.plot(calc['date'], calc['cross1'], 'ro')
 plt.plot(calc['date'], calc['cross2'], 'ro')
 plt.plot(calc['date'], calc['cross3'], 'ro')
-fig1.legend(['Цена закрытия', '7 дней', '14 дней', '21 дней', 'Сигналы на покупку/продажу'])
+fig1.legend(['Цена закрытия', '7 дней', '14 дней', '21 день', 'Сигналы на покупку/продажу'])
 plt.grid()
 fig1.autofmt_xdate()
 fig1.show()
@@ -309,6 +309,7 @@ plt.plot(calc['date'], calc['mom'])
 plt.plot(calc['date'], calc['line0'])
 plt.plot(calc['date'], calc['buyMom'], 'ro', color='red')
 plt.plot(calc['date'], calc['sellMom'], 'ro', color='blue')
+fig2.legend(['Mom', 'Ось симметрии', 'Сигналы на покупку', 'Сигналы на продажу'])
 plt.grid()
 fig2.autofmt_xdate()
 fig2.show()
@@ -319,8 +320,8 @@ plt.title('График ROC')
 plt.xlabel('Дата')  # TODO: Это прирост
 plt.ylabel('Скорость изменения цены')
 plt.plot(calc['date'], calc['roc'])
-# plt.plot(calc['date'], calc['close'])
 plt.plot(calc['date'], calc['line100'])
+fig3.legend(['Roc', 'Уровень запаздывания сигналов'])
 plt.grid()
 fig3.autofmt_xdate()
 fig3.show()
@@ -335,8 +336,11 @@ plt.plot(calc['date'], calc['line75'])
 plt.plot(calc['date'], calc['line25'])
 plt.plot(calc['date'], calc['buyRsiS'], 'ro', color='red')
 plt.plot(calc['date'], calc['sellRsiS'], 'ro', color='blue')
-plt.plot(calc['date'], calc['buyRsiW'], 'ro', color='red')
-plt.plot(calc['date'], calc['sellRsiW'], 'ro', color='blue')
+plt.plot(calc['date'], calc['buyRsiW'], 'ro', color='darkred')
+plt.plot(calc['date'], calc['sellRsiW'], 'ro', color='navy')
+fig4.legend(
+    ['Rsi', 'Зона перекупленности', 'Зона перепроданности', 'Сильные сигналы на покупку', 'Сильные сигналы на продажу',
+     'Слабые сигналы на покупку', 'Слабые сигналы на продажу'])
 plt.grid()
 fig4.autofmt_xdate()
 fig4.show()
@@ -350,6 +354,7 @@ plt.plot(calc['date'], calc['k'])
 plt.plot(calc['date'], calc['r'])
 plt.plot(calc['date'], calc['buyKR'], 'ro', color='red')
 plt.plot(calc['date'], calc['sellKR'], 'ro', color='blue')
+fig5.legend(['%K', '%R', 'Сигналы на покупку', 'Сигналы на продажу'])
 plt.grid()
 fig5.autofmt_xdate()
 fig5.show()
@@ -362,6 +367,7 @@ plt.ylabel('Процент')
 plt.plot(calc['date'], calc['d'])
 plt.plot(calc['date'], calc['buyD'], 'ro', color='red')
 plt.plot(calc['date'], calc['sellD'], 'ro', color='blue')
+fig6.legend(['%D', 'Сигналы на покупку', 'Сигналы на продажу'])
 plt.grid()
 fig6.autofmt_xdate()
 fig6.show()
