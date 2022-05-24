@@ -188,27 +188,28 @@ def cross_mom(x, y, days):
 
 
 # TODO: Разделить слабые и сильные сигналы
-def cross_rsi_buy(x, y, days):
-    cs = pd.DataFrame({'data': []})
+def cross_rsi_strong(x, y, z, days):
+    cs = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
         if x.loc[i + days] == y.loc[i + days] and x.loc[i + days - 1] < y.loc[i + days + 1]:
-            cs.loc[i + days] = y.loc[i + days]
+            cs.loc[i + days, 'buyRsiS'] = y.loc[i + days]
         if x.loc[i + days - 1] < 25 and x.loc[i + days] > 25:
-            cs.loc[i + days - 1] = y.loc[i + days]
-        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1] and x.loc[i + days] < 25:
-            cs.loc[i + days] = x.loc[i + days]
+            cs.loc[i + days - 1, 'buyRsiS'] = y.loc[i + days]
+        if x.loc[i + days] == z.loc[i + days] and x.loc[i + days - 1] > z.loc[i + days + 1]:
+            cs.loc[i + days, 'sellRsiS'] = y.loc[i + days]
+        if x.loc[i + days - 1] > 75 and x.loc[i + days] < 75:
+            cs.loc[i + days - 1, 'sellRsiS'] = z.loc[i + days]
+
     return cs
 
 
-def cross_rsi_sell(x, y, days):
-    cr = pd.DataFrame({'data': []})
+def cross_rsi_weak(x, days):
+    cr = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
-        if x.loc[i + days] == y.loc[i + days] and x.loc[i + days - 1] > y.loc[i + days + 1]:
-            cr.loc[i + days] = y.loc[i + days]
-        if x.loc[i + days - 1] > 75 and x.loc[i + days] < 75:
-            cr.loc[i + days - 1] = y.loc[i + days]
-        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 75:
-            cr.loc[i + days] = x.loc[i + days]
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] >= x.loc[i + days + 1] and x.loc[i + days] > 75:
+            cr.loc[i + days, 'sellRsiW'] = x.loc[i + days]
+        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] <= x.loc[i + days + 1] and x.loc[i + days] < 25:
+            cr.loc[i + days, 'buyRsiW'] = x.loc[i + days]
     return cr
 
 
@@ -264,8 +265,12 @@ calc['cross3'] = cross_sma(calc['14 days'], calc['21 days'], 7)
 sb = cross_mom(calc['mom'], calc['line0'], 7)
 calc['buyMom'] = sb['buy']
 calc['sellMom'] = sb['sell']
-calc['buyRsi'] = cross_rsi_buy(calc['rsi'], calc['line25'], 7)
-calc['sellRsi'] = cross_rsi_sell(calc['rsi'], calc['line75'], 7)
+sellAndBuyRsiStrong = cross_rsi_strong(calc['rsi'], calc['line25'], calc['line75'], 7)
+calc['buyRsiS'] = sellAndBuyRsiStrong['buyRsiS']
+calc['sellRsiS'] = sellAndBuyRsiStrong['sellRsiS']
+sellAndBuyRsiWeak = cross_rsi_weak(calc['rsi'], 7)
+calc['buyRsiW'] = sellAndBuyRsiWeak['buyRsiW']
+calc['sellRsiW'] = sellAndBuyRsiWeak['sellRsiW']
 kr = cross_k_and_r(calc['k'], calc['r'], 7)
 calc['buyKR'] = kr['buy']
 calc['sellKR'] = kr['sell']
@@ -298,7 +303,7 @@ fig2 = plt.figure()
 # plt.subplot(3, 1, 2)
 plt.title('График MOM')
 plt.xlabel('Дата')  # TODO: Это скорость изменения цены
-plt.ylabel('Цена')
+plt.ylabel('Прирост')
 plt.plot(calc['date'], calc['mom'])
 plt.plot(calc['date'], calc['line0'])
 plt.plot(calc['date'], calc['buyMom'], 'ro', color='red')
@@ -311,7 +316,7 @@ fig3 = plt.figure()
 # plt.subplot(3, 1, 3)
 plt.title('График ROC')
 plt.xlabel('Дата')  # TODO: Это прирост
-plt.ylabel('Цена')
+plt.ylabel('Скорость изменения цены')
 plt.plot(calc['date'], calc['roc'])
 # plt.plot(calc['date'], calc['close'])
 plt.plot(calc['date'], calc['line100'])
@@ -327,8 +332,10 @@ plt.ylabel('Цена')
 plt.plot(calc['date'], calc['rsi'])
 plt.plot(calc['date'], calc['line75'])
 plt.plot(calc['date'], calc['line25'])
-plt.plot(calc['date'], calc['buyRsi'], 'ro', color='red')
-plt.plot(calc['date'], calc['sellRsi'], 'ro', color='blue')
+plt.plot(calc['date'], calc['buyRsiS'], 'ro', color='red')
+plt.plot(calc['date'], calc['sellRsiS'], 'ro', color='blue')
+plt.plot(calc['date'], calc['buyRsiW'], 'ro', color='red')
+plt.plot(calc['date'], calc['sellRsiW'], 'ro', color='blue')
 plt.grid()
 fig4.autofmt_xdate()
 fig4.show()
@@ -337,7 +344,7 @@ fig5 = plt.figure()
 # plt.subplot(3, 2, 2)
 plt.title('График стохастических линий: процент K и процент R')
 plt.xlabel('Дата')  # TODO: Не цена, а процент
-plt.ylabel('Цена')
+plt.ylabel('Процент')
 plt.plot(calc['date'], calc['k'])
 plt.plot(calc['date'], calc['r'])
 plt.plot(calc['date'], calc['buyKR'], 'ro', color='red')
@@ -350,7 +357,7 @@ fig6 = plt.figure()
 # plt.subplot(3, 2, 3)
 plt.title('График стохастических линий: процент D')
 plt.xlabel('Дата')  # TODO: Не цена, а процент
-plt.ylabel('Цена')
+plt.ylabel('Процент')
 plt.plot(calc['date'], calc['d'])
 plt.plot(calc['date'], calc['buyD'], 'ro', color='red')
 plt.plot(calc['date'], calc['sellD'], 'ro', color='blue')
