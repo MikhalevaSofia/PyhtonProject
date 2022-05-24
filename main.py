@@ -7,7 +7,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
+# df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
+df = pd.read_csv('resources/Котировки акций Ростелекома.csv', sep=';')
 calc = pd.DataFrame()
 # TODO: Уже работаем с calc
 # TODO: Поправить замечания по стилю
@@ -120,16 +121,6 @@ def calc_r_and_k(x, y, z, days):
         rk.loc[i + days - 1, 'k'] = 100 * (z.loc[i + days - 1] - minForR) / (maxForR - minForR)
     return rk
 
-
-# def calc_k(t, e, u, days):
-#     k = pd.DataFrame({'data': []})
-#     for i in range(0, t.values.size - days + 1):
-#         minForR = t.iloc[i:(i + days)].min()
-#         maxForR = e.iloc[i:(i + days)].max()
-#         k.loc[i + days - 1] = 100 * (u.loc[i + days - 1] - minForR) / (maxForR - minForR)
-#     return k
-
-
 def calc_mom_and_roc(y, days):
     mr = pd.DataFrame()
     for i in range(0, y.values.size + 1 - days):
@@ -195,6 +186,7 @@ def cross_mom(x, y, days):
     return sb
 
 
+# TODO: Разделить слабые и сильные сигналы
 def cross_rsi_buy(x, y, days):
     cs = pd.DataFrame({'data': []})
     for i in range(0, x.values.size - days - 1):
@@ -219,6 +211,7 @@ def cross_rsi_sell(x, y, days):
     return cr
 
 
+# TODO: Делать поиск пиков отдельно для %K и %D и убрать 50%
 def cross_k_and_r(x, y, days):
     kr = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
@@ -228,6 +221,7 @@ def cross_k_and_r(x, y, days):
     return kr
 
 
+# TODO: Отметить все сигналы
 def cross_d(x, days):
     d = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
@@ -339,7 +333,7 @@ fig4.show()
 fig5 = plt.figure()
 # plt.subplot(3, 2, 2)
 plt.title('График стохастических линий: процент K и процент R')
-plt.xlabel('Дата')
+plt.xlabel('Дата')  # TODO: Не цена, а процент
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['k'])
 plt.plot(calc['date'], calc['r'])
@@ -352,7 +346,7 @@ fig5.show()
 fig6 = plt.figure()
 # plt.subplot(3, 2, 3)
 plt.title('График стохастических линий: процент D')
-plt.xlabel('Дата')
+plt.xlabel('Дата')  # TODO: Не цена, а процент
 plt.ylabel('Цена')
 plt.plot(calc['date'], calc['d'])
 plt.plot(calc['date'], calc['buyD'], 'ro', color='red')
