@@ -217,8 +217,9 @@ def cross_rsi_weak(x, days):
 def cross_k_and_r(x, y, days):
     kr = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
-        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 50:
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] >= x.loc[i + days + 1]:
             kr.loc[i + days, 'sell'] = x.loc[i + days]
+        if y.loc[i + days] > y.loc[i + days - 1] and y.loc[i + days] >= y.loc[i + days + 1]:
             kr.loc[i + days, 'buy'] = y.loc[i + days]
     return kr
 
@@ -227,9 +228,9 @@ def cross_k_and_r(x, y, days):
 def cross_d(x, days):
     d = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
-        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1] and x.loc[i + days] > 75:
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1]:
             d.loc[i + days, 'sell'] = x.loc[i + days]
-        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1] and x.loc[i + days] < 25:
+        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1]:
             d.loc[i + days, 'buy'] = x.loc[i + days]
     return d
 
