@@ -218,13 +218,12 @@ def cross_k_and_r(x, y, days):
     return kr_df
 
 
-# TODO: Отметить все сигналы
 def cross_d(x, days):
     d_df = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
-        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] > x.loc[i + days + 1]:
+        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] >= x.loc[i + days + 1]:
             d_df.loc[i + days, 'sell'] = x.loc[i + days]
-        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] < x.loc[i + days + 1]:
+        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] <= x.loc[i + days + 1]:
             d_df.loc[i + days, 'buy'] = x.loc[i + days]
     return d_df
 
@@ -283,9 +282,9 @@ plt.ylabel('Цена')
 plt.plot(calc['date'], calc['close'])
 fig0.legend(['Цена закрытия'])
 plt.grid()
-plt.show()
+fig0.autofmt_xdate()
+fig0.show()
 
-# TODO: Сделать легенду
 fig1 = plt.figure()
 plt.title('График скользящих средних')
 plt.xlabel('Дата')
@@ -309,9 +308,10 @@ plt.title('График MOM')
 plt.xlabel('Дата')
 plt.ylabel('Прирост')
 plt.plot(calc['date'], calc['mom'])
+plt.plot(calc['date'], calc['line0'])
 plt.plot(calc['date'], calc['buyMom'], 'ro', color='red')
 plt.plot(calc['date'], calc['sellMom'], 'ro', color='blue')
-fig2.legend(['Mom', 'Ось симметрии', 'Сигналы на покупку', 'Сигналы на продажу'])
+fig2.legend(['MOM', 'Ось симметрии', 'Сигналы на покупку', 'Сигналы на продажу'])
 plt.grid()
 fig2.autofmt_xdate()
 fig2.show()
@@ -322,7 +322,7 @@ plt.xlabel('Дата')
 plt.ylabel('Скорость изменения цены')
 plt.plot(calc['date'], calc['roc'])
 plt.plot(calc['date'], calc['line100'])
-fig3.legend(['Roc', 'Уровень запаздывания сигналов'])
+fig3.legend(['ROC', 'Уровень запаздывания сигналов'])
 plt.grid()
 fig3.autofmt_xdate()
 fig3.show()
@@ -339,14 +339,14 @@ plt.plot(calc['date'], calc['sellRsiS'], 'ro', color='blue')
 plt.plot(calc['date'], calc['buyRsiW'], 'ro', color='darkred')
 plt.plot(calc['date'], calc['sellRsiW'], 'ro', color='navy')
 fig4.legend(
-    ['Rsi', 'Зона перекупленности', 'Зона перепроданности', 'Сильные сигналы на покупку', 'Сильные сигналы на продажу',
+    ['RSI', 'Зона перекупленности', 'Зона перепроданности', 'Сильные сигналы на покупку', 'Сильные сигналы на продажу',
      'Слабые сигналы на покупку', 'Слабые сигналы на продажу'])
 plt.grid()
 fig4.autofmt_xdate()
 fig4.show()
 
 fig5 = plt.figure()
-plt.title('График стохастических линий: процент K и процент R')
+plt.title('График стохастических линий: %K и %R')
 plt.xlabel('Дата')
 plt.ylabel('Процент')
 plt.plot(calc['date'], calc['k'])
@@ -359,7 +359,7 @@ fig5.autofmt_xdate()
 fig5.show()
 
 fig6 = plt.figure()
-plt.title('График стохастических линий: процент D')
+plt.title('График стохастических линий: %D')
 plt.xlabel('Дата')
 plt.ylabel('Процент')
 plt.plot(calc['date'], calc['d'])
