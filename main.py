@@ -7,8 +7,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
-df = pd.read_csv('resources/Котировки акций Ростелекома.csv', sep=';')
+df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
+# df = pd.read_csv('resources/Котировки акций Ростелекома.csv', sep=';')
 calc = pd.DataFrame()
 calc['close'] = df['<CLOSE>'].astype(float)
 calc['low'] = df['<LOW>'].astype(float)
