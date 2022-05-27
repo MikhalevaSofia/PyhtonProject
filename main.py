@@ -201,9 +201,11 @@ def cross_rsi_strong(x, y, z, days):
 def cross_rsi_weak(x, days):
     cr_df = pd.DataFrame()
     for i in range(0, x.values.size - days - 1):
-        if x.loc[i + days] > x.loc[i + days - 1] and x.loc[i + days] >= x.loc[i + days + 1] and x.loc[i + days] > 75:
+        if x.loc[i + days] > x.loc[i + days - 1] \
+                and x.loc[i + days] >= x.loc[i + days + 1] and x.loc[i + days] > 75:
             cr_df.loc[i + days, 'sellRsiW'] = x.loc[i + days]
-        if x.loc[i + days] < x.loc[i + days - 1] and x.loc[i + days] <= x.loc[i + days + 1] and x.loc[i + days] < 25:
+        if x.loc[i + days] < x.loc[i + days - 1] \
+                and x.loc[i + days] <= x.loc[i + days + 1] and x.loc[i + days] < 25:
             cr_df.loc[i + days, 'buyRsiW'] = x.loc[i + days]
     return cr_df
 
