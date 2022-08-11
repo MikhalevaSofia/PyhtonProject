@@ -9,11 +9,11 @@ import pandas as pd
 import requests
 
 tiker = input()
-board = 'TQBR'
+
 with requests.Session() as session:
     data = apimoex.get_board_history(session, tiker, start='2020-08-11', end='2022-08-11',
                                      columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
-    df = pd.DataFrame(date)
+    df = pd.DataFrame(data)
 
 # df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
 # df = pd.read_csv('resources/Котировки акций Ростелекома.csv', sep=';')
