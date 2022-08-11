@@ -26,5 +26,19 @@ def start(message):
 #     bot.reply_to(message, message.text)
 #     bot.send_message(chat_id=message.chat.id, text="Сигнал")
 
+@bot.message_handler(content_types=['text'])
+def bot_message(message):
+	if message.chat.type == 'private':
+		if message.text == 'Тикеры MOEX/Tikers of MOEX':
+			markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+			button1 = types.KeyboardButton('AFLT')
+			button2 = types.KeyboardButton('SBER')
+			button3 = types.KeyboardButton('GAZP')
+			button4 = types.KeyboardButton('VTBR')
+			button5 = types.KeyboardButton('ROSN')
+			button6 = types.KeyboardButton('Другое/Other')
+			markup.add(button1, button2, button3, button4, button5, button6)
+			bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markup)
+
 
 bot.polling(none_stop=True)
