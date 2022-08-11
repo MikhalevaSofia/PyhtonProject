@@ -45,6 +45,6 @@ def bot_message(message):
 			bot.send_message(message.chat.id,
 							 'Как я уже сказал, я буду помогать тебе торговать на московской бирже: покажу тебе изменение котировок, расскажу, когда лучше купить/продать твои акции, а также построю графики инструментов технического анализа, которые помогут тебе распознать достоверность отправленного мной сигнала')
 			bot.send_message(message.chat.id,
-							 'As I said, I will help you trade on the Moscow stock exchange: I will show you the change in quotations, tell you when it is better to buy/ sell your shares, and also build graphs of technical analysis tools that will help you recognize the reliability of the signal I sent')
+							 'As I said, I will help you trade on the MOEX: I will show you the change in quotations, tell you when it is better to buy/ sell your shares, and also build graphs of technical analysis tools that will help you recognize the reliability of the signal I sent')
 
 bot.polling(none_stop=True)
