@@ -40,7 +40,7 @@ def bot_message(message):
 			button7 = types.KeyboardButton('Назад/Back')
 			markup.add(button1, button2, button3, button4, button5, button6, button7)
 			bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markup)
-		else:
+		elif message.text == 'Информация обо мне/Information about me':
 			bot.send_message(message.chat.id, 'Информация обо мне/Information about me')
 			bot.send_message(message.chat.id,
 							 'Как я уже сказал, я буду помогать тебе торговать на московской бирже: покажу тебе изменение котировок, расскажу, когда лучше купить/продать твои акции, а также построю графики инструментов технического анализа, которые помогут тебе распознать достоверность отправленного мной сигнала')
