@@ -11,16 +11,17 @@ import requests
 tiker = input()
 board = 'TQBR'
 with requests.Session() as session:
-    data = apimoex.get_board - history(session, tiker, start='2020-08-11', end='2022-08-11',
-                                       columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
+    data = apimoex.get_board_history(session, tiker, start='2020-08-11', end='2022-08-11',
+                                     columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
+    df = pd.DataFrame(date)
 
 # df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
 # df = pd.read_csv('resources/Котировки акций Ростелекома.csv', sep=';')
 calc = pd.DataFrame()
-calc['close'] = df['<CLOSE>'].astype(float)
-calc['low'] = df['<LOW>'].astype(float)
-calc['high'] = df['<HIGH>'].astype(float)
-calc['date'] = df['<DATE>']
+calc['close'] = df['CLOSE'].astype(float)
+calc['low'] = df['LOW'].astype(float)
+calc['high'] = df['HIGH'].astype(float)
+calc['date'] = df['TRADEDATE']
 
 
 def calc_simple_moving_average(x, days):
