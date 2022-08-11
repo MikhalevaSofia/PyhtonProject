@@ -4,10 +4,17 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-import matplotlib.pyplot as plt
+import apimoex
 import pandas as pd
+import requests
 
-df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
+tiker = input()
+board = 'TQBR'
+with requests.Session() as session:
+    data = apimoex.get_board - history(session, tiker, start='2020-08-11', end='2022-08-11',
+                                       columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
+
+# df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
 # df = pd.read_csv('resources/Котировки акций Ростелекома.csv', sep=';')
 calc = pd.DataFrame()
 calc['close'] = df['<CLOSE>'].astype(float)
@@ -276,93 +283,93 @@ calc['sellD'] = cross_d_df['sell']
 
 print(calc)
 
-fig0 = plt.figure()
-
-plt.title('График изменения цен закрытия акций')
-plt.xlabel('Дата')
-plt.ylabel('Цена')
-plt.plot(calc['date'], calc['close'])
-fig0.legend(['Цена закрытия'])
-fig0.autofmt_xdate()
-fig0.show()
-
-fig1 = plt.figure()
-plt.title('График скользящих средних')
-plt.xlabel('Дата')
-plt.ylabel('Цена')
-
-plt.plot(calc['date'], calc['close'])
-
-plt.plot(calc['7 days'])
-plt.plot(calc['14 days'])
-plt.plot(calc['21 days'])
-plt.plot(calc['date'], calc['cross1'], 'ro', color='red')
-plt.plot(calc['date'], calc['cross2'], 'ro', color='red')
-plt.plot(calc['date'], calc['cross3'], 'ro', color='red')
-fig1.legend(['Цена закрытия', '7 дней', '14 дней', '21 день', 'Сигналы на покупку/продажу'])
-fig1.autofmt_xdate()
-fig1.show()
-
-fig2 = plt.figure()
-plt.title('График MOM')
-plt.xlabel('Дата')
-plt.ylabel('Прирост')
-plt.plot(calc['date'], calc['mom'])
-plt.plot(calc['date'], calc['line0'])
-plt.plot(calc['date'], calc['buyMom'], 'ro', color='red')
-plt.plot(calc['date'], calc['sellMom'], 'ro', color='blue')
-fig2.legend(['MOM', 'Ось симметрии', 'Сигналы на покупку', 'Сигналы на продажу'])
-fig2.autofmt_xdate()
-fig2.show()
-
-fig3 = plt.figure()
-plt.title('График ROC')
-plt.xlabel('Дата')
-plt.ylabel('Скорость изменения цены')
-plt.plot(calc['date'], calc['roc'])
-plt.plot(calc['date'], calc['line100'])
-fig3.legend(['ROC', 'Уровень запаздывания сигналов'])
-fig3.autofmt_xdate()
-fig3.show()
-
-fig4 = plt.figure()
-plt.title('График RSI')
-plt.xlabel('Дата')
-plt.ylabel('Цена')
-plt.plot(calc['date'], calc['rsi'])
-plt.plot(calc['date'], calc['line75'])
-plt.plot(calc['date'], calc['line25'])
-plt.plot(calc['date'], calc['buyRsiS'], 'ro', color='red')
-plt.plot(calc['date'], calc['sellRsiS'], 'ro', color='blue')
-plt.plot(calc['date'], calc['buyRsiW'], 'ro', color='darkred')
-plt.plot(calc['date'], calc['sellRsiW'], 'ro', color='navy')
-fig4.legend(
-    ['RSI', 'Зона перекупленности', 'Зона перепроданности', 'Сильные сигналы на покупку', 'Сильные сигналы на продажу',
-     'Слабые сигналы на покупку', 'Слабые сигналы на продажу'])
-fig4.autofmt_xdate()
-fig4.show()
-
-fig5 = plt.figure()
-plt.title('График стохастических линий: %K и %R')
-plt.xlabel('Дата')
-plt.ylabel('Процент')
-plt.plot(calc['date'], calc['k'])
-plt.plot(calc['date'], calc['r'])
-plt.plot(calc['date'], calc['buyKR'], 'ro', color='red')
-plt.plot(calc['date'], calc['sellKR'], 'ro', color='blue')
-fig5.legend(['%K', '%R', 'Сигналы на покупку', 'Сигналы на продажу'])
-fig5.autofmt_xdate()
-fig5.show()
-
-fig6 = plt.figure()
-plt.title('График стохастических линий: %D')
-plt.xlabel('Дата')
-plt.ylabel('Процент')
-plt.plot(calc['date'], calc['d'])
-plt.plot(calc['date'], calc['buyD'], 'ro', color='red')
-plt.plot(calc['date'], calc['sellD'], 'ro', color='blue')
-fig6.legend(['%D', 'Сигналы на покупку', 'Сигналы на продажу'])
-fig6.autofmt_xdate()
-fig6.show()
-
-plt.show()
+# fig0 = plt.figure()
+#
+# plt.title('График изменения цен закрытия акций')
+# plt.xlabel('Дата')
+# plt.ylabel('Цена')
+# plt.plot(calc['date'], calc['close'])
+# fig0.legend(['Цена закрытия'])
+# fig0.autofmt_xdate()
+# fig0.show()
+#
+# fig1 = plt.figure()
+# plt.title('График скользящих средних')
+# plt.xlabel('Дата')
+# plt.ylabel('Цена')
+#
+# plt.plot(calc['date'], calc['close'])
+#
+# plt.plot(calc['7 days'])
+# plt.plot(calc['14 days'])
+# plt.plot(calc['21 days'])
+# plt.plot(calc['date'], calc['cross1'], 'ro', color='red')
+# plt.plot(calc['date'], calc['cross2'], 'ro', color='red')
+# plt.plot(calc['date'], calc['cross3'], 'ro', color='red')
+# fig1.legend(['Цена закрытия', '7 дней', '14 дней', '21 день', 'Сигналы на покупку/продажу'])
+# fig1.autofmt_xdate()
+# fig1.show()
+#
+# fig2 = plt.figure()
+# plt.title('График MOM')
+# plt.xlabel('Дата')
+# plt.ylabel('Прирост')
+# plt.plot(calc['date'], calc['mom'])
+# plt.plot(calc['date'], calc['line0'])
+# plt.plot(calc['date'], calc['buyMom'], 'ro', color='red')
+# plt.plot(calc['date'], calc['sellMom'], 'ro', color='blue')
+# fig2.legend(['MOM', 'Ось симметрии', 'Сигналы на покупку', 'Сигналы на продажу'])
+# fig2.autofmt_xdate()
+# fig2.show()
+#
+# fig3 = plt.figure()
+# plt.title('График ROC')
+# plt.xlabel('Дата')
+# plt.ylabel('Скорость изменения цены')
+# plt.plot(calc['date'], calc['roc'])
+# plt.plot(calc['date'], calc['line100'])
+# fig3.legend(['ROC', 'Уровень запаздывания сигналов'])
+# fig3.autofmt_xdate()
+# fig3.show()
+#
+# fig4 = plt.figure()
+# plt.title('График RSI')
+# plt.xlabel('Дата')
+# plt.ylabel('Цена')
+# plt.plot(calc['date'], calc['rsi'])
+# plt.plot(calc['date'], calc['line75'])
+# plt.plot(calc['date'], calc['line25'])
+# plt.plot(calc['date'], calc['buyRsiS'], 'ro', color='red')
+# plt.plot(calc['date'], calc['sellRsiS'], 'ro', color='blue')
+# plt.plot(calc['date'], calc['buyRsiW'], 'ro', color='darkred')
+# plt.plot(calc['date'], calc['sellRsiW'], 'ro', color='navy')
+# fig4.legend(
+#     ['RSI', 'Зона перекупленности', 'Зона перепроданности', 'Сильные сигналы на покупку', 'Сильные сигналы на продажу',
+#      'Слабые сигналы на покупку', 'Слабые сигналы на продажу'])
+# fig4.autofmt_xdate()
+# fig4.show()
+#
+# fig5 = plt.figure()
+# plt.title('График стохастических линий: %K и %R')
+# plt.xlabel('Дата')
+# plt.ylabel('Процент')
+# plt.plot(calc['date'], calc['k'])
+# plt.plot(calc['date'], calc['r'])
+# plt.plot(calc['date'], calc['buyKR'], 'ro', color='red')
+# plt.plot(calc['date'], calc['sellKR'], 'ro', color='blue')
+# fig5.legend(['%K', '%R', 'Сигналы на покупку', 'Сигналы на продажу'])
+# fig5.autofmt_xdate()
+# fig5.show()
+#
+# fig6 = plt.figure()
+# plt.title('График стохастических линий: %D')
+# plt.xlabel('Дата')
+# plt.ylabel('Процент')
+# plt.plot(calc['date'], calc['d'])
+# plt.plot(calc['date'], calc['buyD'], 'ro', color='red')
+# plt.plot(calc['date'], calc['sellD'], 'ro', color='blue')
+# fig6.legend(['%D', 'Сигналы на покупку', 'Сигналы на продажу'])
+# fig6.autofmt_xdate()
+# fig6.show()
+#
+# plt.show()
