@@ -37,8 +37,14 @@ def bot_message(message):
 			button4 = types.KeyboardButton('VTBR')
 			button5 = types.KeyboardButton('ROSN')
 			button6 = types.KeyboardButton('Другое/Other')
-			markup.add(button1, button2, button3, button4, button5, button6)
+			button7 = types.KeyboardButton('Назад/Back')
+			markup.add(button1, button2, button3, button4, button5, button6, button7)
 			bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markup)
-
+		else:
+			bot.send_message(message.chat.id, 'Информация обо мне/Information about me')
+			bot.send_message(message.chat.id,
+							 'Как я уже сказал, я буду помогать тебе торговать на московской бирже: покажу тебе изменение котировок, расскажу, когда лучше купить/продать твои акции, а также построю графики инструментов технического анализа, которые помогут тебе распознать достоверность отправленного мной сигнала')
+			bot.send_message(message.chat.id,
+							 'As I said, I will help you trade on the Moscow stock exchange: I will show you the change in quotations, tell you when it is better to buy/ sell your shares, and also build graphs of technical analysis tools that will help you recognize the reliability of the signal I sent')
 
 bot.polling(none_stop=True)
