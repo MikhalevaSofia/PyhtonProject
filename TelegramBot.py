@@ -1,8 +1,10 @@
+import pandas as pd
 import telebot
 from telebot import types
+
 token = '5576162699:AAEzBKzcfy-Eq4Vk4DinKZL9tFMWlIMBs6g'
 bot = telebot.TeleBot(token)
-
+df = pd.DataFrame()
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -20,7 +22,8 @@ def start(message):
 	bot.send_message(message.chat.id,
 					 'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.',
 					 reply_markup=markup)
-
+	user_id = message.from_user.id
+	print(user_id)
 
 # @bot.message_handler(func=lambda message: True)
 # def echo_all(message):
