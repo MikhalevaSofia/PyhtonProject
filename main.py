@@ -6,22 +6,65 @@
 import apimoex
 import pandas as pd
 import requests
+def get_calculation(tiker):
+    with requests.Session() as session:
+        data = apimoex.get_board_history(session, tiker, start='2020-08-11', end='2022-08-11',
+                                         columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
+        df = pd.DataFrame(data)
+    if df.empty:
+        return 'Это не тикер!!'
 
-tiker = input()
+    calc = pd.DataFrame()
+    calc['close'] = df['CLOSE'].astype(float)
+    calc['low'] = df['LOW'].astype(float)
+    calc['high'] = df['HIGH'].astype(float)
+    calc['date'] = df['TRADEDATE']
+    calc['growth'] = calc_growth_for_rsi(calc['close'])
 
-with requests.Session() as session:
-    data = apimoex.get_board_history(session, tiker, start='2020-08-11', end='2022-08-11',
-                                     columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
-    df = pd.DataFrame(data)
+    calc['rsi'] = calc_relative_strength_index(calc['growth'], 6)
 
-# df = pd.read_csv('resources/US1.AAPL_210224_220224.csv', sep=';')
-# df = pd.read_csv('resources/Котировки акций Ростелекома.csv', sep=';')
-calc = pd.DataFrame()
-calc['close'] = df['CLOSE'].astype(float)
-calc['low'] = df['LOW'].astype(float)
-calc['high'] = df['HIGH'].astype(float)
-calc['date'] = df['TRADEDATE']
+    calc['7 days'] = calc_simple_moving_average(calc['close'], 7)
 
+    calc['14 days'] = calc_simple_moving_average(calc['close'], 14)
+
+    calc['21 days'] = calc_simple_moving_average(calc['close'], 21)
+
+    calc['min'] = calc_min_for_d(calc['low'], 6)
+    calc['max'] = calc_max_for_d(calc['high'], 6)
+    calc['difference1'] = calc_for_d1(calc['close'], calc['min'])
+    calc['difference2'] = calc_for_d2(calc['max'], calc['min'])
+    calc['d'] = calc_d(calc['difference1'], calc['difference2'])
+    r_and_k_df = calc_r_and_k(calc['low'], calc['high'], calc['close'], 7)
+    calc['r'] = r_and_k_df['r']
+    calc['k'] = r_and_k_df['k']
+    mom_and_roc_df = calc_mom_and_roc(calc['close'], 7)
+    calc['mom'] = mom_and_roc_df['mom']
+    calc['roc'] = mom_and_roc_df['roc']
+    calc['line0'] = line_for_momentum(calc['close'], 7)
+    calc['line75'] = line75_for_rsi(calc['close'], 7)
+    calc['line25'] = line25_for_rsi(calc['close'], 7)
+    calc['line100'] = line100_for_roc(calc['close'], 7)
+    calc['cross1'] = cross_sma(calc['7 days'], calc['14 days'], 7)
+    calc['cross2'] = cross_sma(calc['7 days'], calc['21 days'], 7)
+    calc['cross3'] = cross_sma(calc['14 days'], calc['21 days'], 7)
+    sell_and_buy_df = cross_mom(calc['mom'], calc['line0'], 7)
+    calc['buyMom'] = sell_and_buy_df['buy']
+    calc['sellMom'] = sell_and_buy_df['sell']
+    sell_and_buy_rsi_strong_df = cross_rsi_strong(calc['rsi'], calc['line25'], calc['line75'], 7)
+    calc['buyRsiS'] = sell_and_buy_rsi_strong_df['buyRsiS']
+    calc['sellRsiS'] = sell_and_buy_rsi_strong_df['sellRsiS']
+    sell_and_buy_rsi_weak_df = cross_rsi_weak(calc['rsi'], 7)
+    calc['buyRsiW'] = sell_and_buy_rsi_weak_df['buyRsiW']
+    calc['sellRsiW'] = sell_and_buy_rsi_weak_df['sellRsiW']
+    cross_k_and_r_df = cross_k_and_r(calc['k'], calc['r'], 7)
+    calc['buyKR'] = cross_k_and_r_df['buy']
+    calc['sellKR'] = cross_k_and_r_df['sell']
+    cross_d_df = cross_d(calc['d'], 7)
+    calc['buyD'] = cross_d_df['buy']
+    calc['sellD'] = cross_d_df['sell']
+
+    print(calc)
+    return 'Расчёты готовы!'
 
 def calc_simple_moving_average(x, days):
     sma_df = pd.DataFrame({'data': []})
@@ -237,51 +280,6 @@ def cross_d(x, days):
     return d_df
 
 
-calc['growth'] = calc_growth_for_rsi(calc['close'])
-
-calc['rsi'] = calc_relative_strength_index(calc['growth'], 6)
-
-calc['7 days'] = calc_simple_moving_average(calc['close'], 7)
-
-calc['14 days'] = calc_simple_moving_average(calc['close'], 14)
-
-calc['21 days'] = calc_simple_moving_average(calc['close'], 21)
-
-calc['min'] = calc_min_for_d(calc['low'], 6)
-calc['max'] = calc_max_for_d(calc['high'], 6)
-calc['difference1'] = calc_for_d1(calc['close'], calc['min'])
-calc['difference2'] = calc_for_d2(calc['max'], calc['min'])
-calc['d'] = calc_d(calc['difference1'], calc['difference2'])
-r_and_k_df = calc_r_and_k(calc['low'], calc['high'], calc['close'], 7)
-calc['r'] = r_and_k_df['r']
-calc['k'] = r_and_k_df['k']
-mom_and_roc_df = calc_mom_and_roc(calc['close'], 7)
-calc['mom'] = mom_and_roc_df['mom']
-calc['roc'] = mom_and_roc_df['roc']
-calc['line0'] = line_for_momentum(calc['close'], 7)
-calc['line75'] = line75_for_rsi(calc['close'], 7)
-calc['line25'] = line25_for_rsi(calc['close'], 7)
-calc['line100'] = line100_for_roc(calc['close'], 7)
-calc['cross1'] = cross_sma(calc['7 days'], calc['14 days'], 7)
-calc['cross2'] = cross_sma(calc['7 days'], calc['21 days'], 7)
-calc['cross3'] = cross_sma(calc['14 days'], calc['21 days'], 7)
-sell_and_buy_df = cross_mom(calc['mom'], calc['line0'], 7)
-calc['buyMom'] = sell_and_buy_df['buy']
-calc['sellMom'] = sell_and_buy_df['sell']
-sell_and_buy_rsi_strong_df = cross_rsi_strong(calc['rsi'], calc['line25'], calc['line75'], 7)
-calc['buyRsiS'] = sell_and_buy_rsi_strong_df['buyRsiS']
-calc['sellRsiS'] = sell_and_buy_rsi_strong_df['sellRsiS']
-sell_and_buy_rsi_weak_df = cross_rsi_weak(calc['rsi'], 7)
-calc['buyRsiW'] = sell_and_buy_rsi_weak_df['buyRsiW']
-calc['sellRsiW'] = sell_and_buy_rsi_weak_df['sellRsiW']
-cross_k_and_r_df = cross_k_and_r(calc['k'], calc['r'], 7)
-calc['buyKR'] = cross_k_and_r_df['buy']
-calc['sellKR'] = cross_k_and_r_df['sell']
-cross_d_df = cross_d(calc['d'], 7)
-calc['buyD'] = cross_d_df['buy']
-calc['sellD'] = cross_d_df['sell']
-
-print(calc)
 
 # fig0 = plt.figure()
 #

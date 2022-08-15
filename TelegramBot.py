@@ -2,9 +2,12 @@ import pandas as pd
 import telebot
 from telebot import types
 
+import main
+
 token = '5576162699:AAEzBKzcfy-Eq4Vk4DinKZL9tFMWlIMBs6g'
 bot = telebot.TeleBot(token)
 df = pd.DataFrame()
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -14,14 +17,14 @@ def start(message):
 	button3 = types.KeyboardButton('Анекдот (опция только на русском)')
 
 	markup.add(button1, button2, button3)
-	bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user))
+	bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), reply_markup=markup)
 	bot.send_message(message.chat.id,
 					 'Меня зовут Traider`s Assistant. Я твой бот-помощник в осуществлении торгов на Московской бирже. Для получения информации ты можешь воcпользоваться подсказками ниже.')
 
 	bot.send_message(message.chat.id, 'Hey, {0.first_name}! '.format(message.from_user))
 	bot.send_message(message.chat.id,
-					 'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.',
-					 reply_markup=markup)
+					 'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.'
+					 )
 	user_id = message.from_user.id
 	print(user_id)
 
@@ -74,6 +77,11 @@ def bot_message(message):
 
 			markup.add(button1, button2, button3)
 			bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markup)
+
+		elif message.text == 'Другое/Other':
+			bot.send_message(message.chat.id, 'Введи название тикера')
+		else:
+			bot.send_message(message.chat.id, main.get_calculation(message.text))
 
 
 bot.polling(none_stop=True)
