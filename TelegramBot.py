@@ -8,16 +8,28 @@ token = '5576162699:AAEzBKzcfy-Eq4Vk4DinKZL9tFMWlIMBs6g'
 bot = telebot.TeleBot(token)
 df = pd.DataFrame()
 
+markupStart = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
+	types.KeyboardButton('Тикеры MOEX/Tikers of MOEX'),
+	types.KeyboardButton('Информация обо мне/Information about me'),
+	types.KeyboardButton('Анекдот (опция только на русском)')
+)
+markupTikers = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
+	types.KeyboardButton('AFLT'),
+	types.KeyboardButton('SBER'),
+	types.KeyboardButton('GAZP'),
+	types.KeyboardButton('VTBR'),
+	types.KeyboardButton('ROSN'),
+	types.KeyboardButton('Другое/Other'),
+	types.KeyboardButton('Назад/Back')
+)
+markupBack = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
+	types.KeyboardButton('Назад/Back')
+)
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
-	markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-	button1 = types.KeyboardButton('Тикеры MOEX/Tikers of MOEX')
-	button2 = types.KeyboardButton('Информация обо мне/Information about me')
-	button3 = types.KeyboardButton('Анекдот (опция только на русском)')
-
-	markup.add(button1, button2, button3)
-	bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), reply_markup=markup)
+	bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), reply_markup=markupStart)
 	bot.send_message(message.chat.id,
 					 'Меня зовут Traider`s Assistant. Я твой бот-помощник в осуществлении торгов на Московской бирже. Для получения информации ты можешь воcпользоваться подсказками ниже.')
 
@@ -37,46 +49,30 @@ def start(message):
 def bot_message(message):
 	if message.chat.type == 'private':
 		if message.text == 'Тикеры MOEX/Tikers of MOEX':
-			markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			button1 = types.KeyboardButton('AFLT')
-			button2 = types.KeyboardButton('SBER')
-			button3 = types.KeyboardButton('GAZP')
-			button4 = types.KeyboardButton('VTBR')
-			button5 = types.KeyboardButton('ROSN')
-			button6 = types.KeyboardButton('Другое/Other')
-			button7 = types.KeyboardButton('Назад/Back')
-			markup.add(button1, button2, button3, button4, button5, button6, button7)
-			bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markup)
+
+			bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markupTikers)
 		elif message.text == 'Информация обо мне/Information about me':
-			markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			button1 = types.KeyboardButton('Назад/Back')
-			markup.add(button1)
+
 			bot.send_message(message.chat.id, 'Информация обо мне/Information about me')
 			bot.send_message(message.chat.id,
 							 'Как я уже сказал, я буду помогать тебе торговать на московской бирже: покажу тебе изменение котировок, расскажу, когда лучше купить/продать твои акции, а также построю графики инструментов технического анализа, которые помогут тебе распознать достоверность отправленного мной сигнала')
 			bot.send_message(message.chat.id,
 							 'As I said, I will help you trade on the MOEX: I will show you the change in quotations, tell you when it is better to buy/ sell your shares, and also build graphs of technical analysis tools that will help you recognize the reliability of the signal I sent',
-							 reply_markup=markup)
+							 reply_markup=markupBack)
 
 
 
 		elif message.text == 'Анекдот (опция только на русском)':
-			markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			button1 = types.KeyboardButton('Назад/Back')
-			markup.add(button1)
+
 			bot.send_message(message.chat.id, 'Анекдот (опция только на русском)')
 			bot.send_message(message.chat.id, 'Беседуют две блондинки:'
 											  '— Как ты смогла при всех назвать меня дурой?'
-											  '— Извини, ты же не предупредила, что скрываешь.', reply_markup=markup)
+											  '— Извини, ты же не предупредила, что скрываешь.',
+							 reply_markup=markupBack)
 
 		elif message.text == 'Назад/Back':
-			markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-			button1 = types.KeyboardButton('Тикеры MOEX/Tikers of MOEX')
-			button2 = types.KeyboardButton('Информация обо мне/Information about me')
-			button3 = types.KeyboardButton('Анекдот (опция только на русском)')
 
-			markup.add(button1, button2, button3)
-			bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markup)
+			bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markupStart)
 
 		elif message.text == 'Другое/Other':
 			bot.send_message(message.chat.id, 'Введи название тикера')
