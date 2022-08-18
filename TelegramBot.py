@@ -80,9 +80,7 @@ def bot_message(message):
 
 		elif message.text == 'Другое/Other':
 			bot.send_message(message.chat.id, 'Введи название тикера')
-		elif message.text == 'Другое/Other':
-			tikers_df[tiker] = tiker
-			print(tikers_df)
+
 		else:
 			bot.send_message(message.chat.id, main.get_calculation(message.text))
 
