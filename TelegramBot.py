@@ -26,6 +26,8 @@ markupBack = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 	types.KeyboardButton('Назад/Back')
 )
 
+tikers_df = pd.DataFrame()
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -37,8 +39,10 @@ def start(message):
 	bot.send_message(message.chat.id,
 					 'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.'
 					 )
-	user_id = message.from_user.id
-	print(user_id)
+
+	tikers_df['id'] = message.from_user.id
+	print(tikers_df)
+
 
 # @bot.message_handler(func=lambda message: True)
 # def echo_all(message):
@@ -76,6 +80,9 @@ def bot_message(message):
 
 		elif message.text == 'Другое/Other':
 			bot.send_message(message.chat.id, 'Введи название тикера')
+		elif message.text == 'Другое/Other':
+			tikers_df[tiker] = tiker
+			print(tikers_df)
 		else:
 			bot.send_message(message.chat.id, main.get_calculation(message.text))
 
