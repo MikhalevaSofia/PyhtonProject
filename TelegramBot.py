@@ -40,7 +40,7 @@ def start(message):
 					 'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.'
 					 )
 
-	tikers_df['id'] = message.from_user.id
+	tikers_df['id'] = message.from_user.id(str)
 	print(tikers_df)
 
 

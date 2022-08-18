@@ -6,6 +6,17 @@
 import apimoex
 import pandas as pd
 import requests
+
+
+def check_tiker(tiker):
+    with requests.Session() as session:
+        data = apimoex.get_board_history(session, tiker, start='2022-08-01', end='2022-08-11',
+                                         columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
+        check_df = pd.DataFrame(data)
+        if check_df.empty:
+            return False
+
+
 def get_calculation(tiker):
     with requests.Session() as session:
         data = apimoex.get_board_history(session, tiker, start='2020-08-11', end='2022-08-11',
