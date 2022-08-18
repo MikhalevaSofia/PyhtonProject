@@ -15,6 +15,8 @@ def check_tiker(tiker):
         check_df = pd.DataFrame(data)
         if check_df.empty:
             return False
+        else:
+            return True
 
 
 def get_calculation(tiker):

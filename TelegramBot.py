@@ -81,8 +81,10 @@ def bot_message(message):
 		elif message.text == 'Другое/Other':
 			bot.send_message(message.chat.id, 'Введи название тикера')
 
+
 		else:
 			bot.send_message(message.chat.id, main.get_calculation(message.text))
+			if check_tiker = False
 
 
 bot.polling(none_stop=True)
