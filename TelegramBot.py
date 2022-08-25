@@ -26,7 +26,7 @@ markupBack = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 	types.KeyboardButton('Назад/Back')
 )
 
-tikers_df = pd.DataFrame()
+tikers_df = pd.DataFrame(columns=['id', 'tikers'])
 
 
 @bot.message_handler(commands=['start'])
@@ -40,8 +40,7 @@ def start(message):
 					 'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.'
 					 )
 
-	tikers_df['id'] = message.from_user.id(str)
-	print(tikers_df)
+
 
 
 # @bot.message_handler(func=lambda message: True)
@@ -70,21 +69,27 @@ def bot_message(message):
 
 			bot.send_message(message.chat.id, 'Анекдот (опция только на русском)')
 			bot.send_message(message.chat.id, 'Беседуют две блондинки:'
-											  '— Как ты смогла при всех назвать меня дурой?'
-											  '— Извини, ты же не предупредила, что скрываешь.',
-							 reply_markup=markupBack)
+                                              '— Как ты могла при всех назвать меня дурой?'
+                                              '— Извини, ты же не предупредила, что скрываешь.',
+                             reply_markup=markupBack)
 
-		elif message.text == 'Назад/Back':
+        elif message.text == 'Назад/Back':
 
-			bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markupStart)
+            bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markupStart)
 
-		elif message.text == 'Другое/Other':
-			bot.send_message(message.chat.id, 'Введи название тикера')
+        elif message.text == 'Другое/Other':
+            bot.send_message(message.chat.id, 'Введи название тикера')
 
 
-		else:
-			bot.send_message(message.chat.id, main.get_calculation(message.text))
-			if check_tiker = False
+        else:
+
+            if main.check_tiker(message.text):
+                tikers_df.iloc[tikers_df.shape[0], 'id'] = message.from_user.id
+                # tikers_df['tiker'] = message.text
+
+                print(tikers_df)
+            # bot.send_message(message.chat.id, main.g
+        # et_calculation(message.text))
 
 
 bot.polling(none_stop=True)
