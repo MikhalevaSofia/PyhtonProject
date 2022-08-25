@@ -75,13 +75,8 @@ def bot_message(message):
 			bot.send_message(message.chat.id, 'Введи название тикера')
 		else:
 			if main.check_tiker(message.text):
-				tikers_df2 = users.save_users(tikers_df, message.from_user.id, message.text)
-				tikers_df = tikers_df2
-	# tikers_df.loc[tikers_df.shape[0], 'id'] = message.from_user.id
-	# tikers_df['tiker'] = message.text
-	# print(tikers_df)
-            # bot.send_message(message.chat.id, main.g
-        # et_calculation(message.text))
+				global tikers_df
+				tikers_df = users.save_users(tikers_df, message.from_user.id, message.text)
 
 
 bot.polling(none_stop=True)
