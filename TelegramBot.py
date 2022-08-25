@@ -62,32 +62,21 @@ def bot_message(message):
 			bot.send_message(message.chat.id,
 							 'As I said, I will help you trade on the MOEX: I will show you the change in quotations, tell you when it is better to buy/ sell your shares, and also build graphs of technical analysis tools that will help you recognize the reliability of the signal I sent',
 							 reply_markup=markupBack)
-
-
-
 		elif message.text == 'Анекдот (опция только на русском)':
-
 			bot.send_message(message.chat.id, 'Анекдот (опция только на русском)')
 			bot.send_message(message.chat.id, 'Беседуют две блондинки:'
                                               '— Как ты могла при всех назвать меня дурой?'
                                               '— Извини, ты же не предупредила, что скрываешь.',
                              reply_markup=markupBack)
-
-        elif message.text == 'Назад/Back':
-
-            bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markupStart)
-
-        elif message.text == 'Другое/Other':
-            bot.send_message(message.chat.id, 'Введи название тикера')
-
-
-        else:
-
-            if main.check_tiker(message.text):
-                tikers_df.iloc[tikers_df.shape[0], 'id'] = message.from_user.id
+		elif message.text == 'Назад/Back':
+			bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markupStart)
+		elif message.text == 'Другое/Other':
+			bot.send_message(message.chat.id, 'Введи название тикера')
+		else:
+			if main.check_tiker(message.text):
+				tikers_df.loc[tikers_df.shape[0], 'id'] = message.from_user.id
                 # tikers_df['tiker'] = message.text
-
-                print(tikers_df)
+				print(tikers_df)
             # bot.send_message(message.chat.id, main.g
         # et_calculation(message.text))
 
