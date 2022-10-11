@@ -76,7 +76,7 @@ def bot_message(message):
 		else:
 			if main.check_tiker(message.text):
 				global tikers_df
-				tikers_df = users.save_users(tikers_df, message.from_user.id, message.text)
+				tikers_df = users.add_user_tiker(tikers_df, message.from_user.id, message.text)
 
 
 bot.polling(none_stop=True)
