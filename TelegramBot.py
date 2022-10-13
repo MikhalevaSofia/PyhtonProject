@@ -8,7 +8,7 @@ import users
 token = '5576162699:AAEzBKzcfy-Eq4Vk4DinKZL9tFMWlIMBs6g'
 bot = telebot.TeleBot(token)
 df = pd.DataFrame()
-
+print('Я работаю!')
 markupStart = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 	types.KeyboardButton('Тикеры MOEX/Tikers of MOEX'),
 	types.KeyboardButton('Информация обо мне/Information about me'),
@@ -27,7 +27,7 @@ markupBack = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 	types.KeyboardButton('Назад/Back')
 )
 
-tikers_df = pd.DataFrame(columns=['id', 'tikers'])
+users_df = users.load_from_csv()
 
 
 @bot.message_handler(commands=['start'])
@@ -75,8 +75,8 @@ def bot_message(message):
 			bot.send_message(message.chat.id, 'Введи название тикера')
 		else:
 			if main.check_tiker(message.text):
-				global tikers_df
-				tikers_df = users.add_user_tiker(tikers_df, message.from_user.id, message.text)
+				global users_df
+				users_df = users.add_user_tiker(users_df, message.from_user.id, message.text)
 
 
 bot.polling(none_stop=True)
