@@ -12,7 +12,8 @@ print('Я работаю!')
 markupStart = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 	types.KeyboardButton('Тикеры MOEX/Tikers of MOEX'),
 	types.KeyboardButton('Информация обо мне/Information about me'),
-	types.KeyboardButton('Анекдот (опция только на русском)')
+	types.KeyboardButton('Анекдот (опция только на русском)'),
+	types.KeyboardButton('Мои тикеры MOEX/My MOEX tikers')
 )
 markupTikers = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 	types.KeyboardButton('AFLT'),
@@ -24,6 +25,10 @@ markupTikers = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 	types.KeyboardButton('Назад/Back')
 )
 markupBack = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
+	types.KeyboardButton('Назад/Back')
+)
+markupAdd = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
+	types.KeyboardButton('Добавить тикер/Add tiker'),
 	types.KeyboardButton('Назад/Back')
 )
 
@@ -73,6 +78,15 @@ def bot_message(message):
 			bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markupStart)
 		elif message.text == 'Другое/Other':
 			bot.send_message(message.chat.id, 'Введи название тикера')
+		elif message.text == 'Мои тикеры MOEX/My MOEX tikers':
+
+			if users_df.empty:
+				bot.send_message(message.chat.id, 'У тебя ещё нет тикеров!/You do not have tikers yet',
+								 reply_markup=markupAdd)
+			else:
+				bot.send_message(message.chat.id, users_df.loc[users_df['id'] == id, 'tikers'][0])
+		elif message.text == 'Добавить тикер/Add tiker':
+			bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markupTikers)
 		else:
 			if main.check_tiker(message.text):
 				global users_df
