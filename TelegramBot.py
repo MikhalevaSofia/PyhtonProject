@@ -41,22 +41,24 @@ markupRemove = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
     types.KeyboardButton('Назад/Back')
 )
 
-users_df = users.load_from_csv()
 
-
-def check_tiker_in_str(users_df: pd.DataFrame, user_tikers: str, tiker: str):
-    for need_tiker in user_tikers.split(','):
-
-        if tiker == need_tiker:
-            c += 1
-    if c > 0:
-        for need_tiker in user_tikers.split(','):
-            if tiker != need_tiker:
-                user_tikers += tiker
-
-    else:
-        bot.send.message(message.chat.id, 'Такого тикера нет!', reply_markup=markupAdd)
-    return user_tikers
+# def check_tiker_in_str(users_df: pd.DataFrame, user_tikers: str, tiker: str):
+#     new_user_tikers = ''
+#     c = 0
+#     for need_tiker in user_tikers.split(','):
+#
+#         if tiker == need_tiker:
+#             c += 1
+#     if c > 0:
+#
+#         for need_tiker in user_tikers.split(','):
+#             if tiker != need_tiker:
+#                 new_user_tikers += tiker
+#
+#     else:
+#         bot.send.message(message.chat.id, 'Такого тикера нет!', reply_markup=markupAdd)
+#         new_user_tikers = user_tikers
+#     return new_user_tikers
 
 
 @bot.message_handler(commands=['start'])
@@ -78,7 +80,6 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def bot_message(message):
-    global users_df
     if message.chat.type == 'private':
         if message.text == 'Тикеры MOEX/Tikers of MOEX':
 
@@ -103,11 +104,11 @@ def bot_message(message):
             bot.send_message(message.chat.id, 'Введи название тикера')
         elif message.text == 'Мои тикеры MOEX/My MOEX tikers':
             tikers_semaphore.acquire(blocking=True, timeout=0.5)
-            if users_df.empty or users_df.loc[users_df['id'] == message.chat.id, 'tikers'].size == 0:
+            if users.users_df.empty or users.get_user_tikers(message.chat.id).size == 0:
                 bot.send_message(message.chat.id, 'У тебя ещё нет тикеров!/You do not have tikers yet',
                                  reply_markup=markupAdd)
             else:
-                bot.send_message(message.chat.id, users_df.loc[users_df['id'] == message.chat.id, 'tikers'][0],
+                bot.send_message(message.chat.id, users.get_user_tikers(message.chat.id),
                                  reply_markup=markupRemove)
 
             tikers_semaphore.release()
@@ -116,6 +117,7 @@ def bot_message(message):
         elif message.text == 'Удалить тикер/Remove tiker':
             bot.send_message(message.chat.id, 'Введи название тикера, который необходимо удалить',
                              reply_markup=markupBack)
+
         else:
             if main.check_tiker(message.text):
                 tikers_semaphore.acquire(blocking=True, timeout=0.5)
