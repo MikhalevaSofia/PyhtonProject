@@ -42,8 +42,11 @@ def load_from_csv():
 
 def get_user_tikers(id: int):
     global users_df
-    return users_df.loc[users_df['id'] == id, 'tikers'].iat[0]
+    if users_df.empty or users_df.loc[users_df['id'] == id].empty:
+        return ''
+    else:
+        return users_df.loc[users_df['id'] == id, 'tikers'].iat[0]
 
 
-users_df = load_from_csv()
 name_file = 'users.csv'
+users_df = load_from_csv()

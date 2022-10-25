@@ -42,23 +42,23 @@ markupRemove = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 )
 
 
-# def check_tiker_in_str(users_df: pd.DataFrame, user_tikers: str, tiker: str):
-#     new_user_tikers = ''
-#     c = 0
-#     for need_tiker in user_tikers.split(','):
-#
-#         if tiker == need_tiker:
-#             c += 1
-#     if c > 0:
-#
-#         for need_tiker in user_tikers.split(','):
-#             if tiker != need_tiker:
-#                 new_user_tikers += tiker
-#
-#     else:
-#         bot.send.message(message.chat.id, 'Такого тикера нет!', reply_markup=markupAdd)
-#         new_user_tikers = user_tikers
-#     return new_user_tikers
+def check_tiker_in_str(users_df: pd.DataFrame, user_tikers: str, tiker: str):
+    new_user_tikers = ''
+    c = 0
+    for need_tiker in user_tikers.split(','):
+
+        if tiker == need_tiker:
+            c += 1
+    if c > 0:
+
+        for need_tiker in user_tikers.split(','):
+            if tiker != need_tiker:
+                new_user_tikers += tiker
+
+    else:
+        bot.send.message(message.chat.id, 'Такого тикера нет!', reply_markup=markupAdd)
+        new_user_tikers = user_tikers
+    return new_user_tikers
 
 
 @bot.message_handler(commands=['start'])
@@ -104,7 +104,7 @@ def bot_message(message):
             bot.send_message(message.chat.id, 'Введи название тикера')
         elif message.text == 'Мои тикеры MOEX/My MOEX tikers':
             tikers_semaphore.acquire(blocking=True, timeout=0.5)
-            if users.users_df.empty or users.get_user_tikers(message.chat.id).size == 0:
+            if users.get_user_tikers(message.chat.id) == '':
                 bot.send_message(message.chat.id, 'У тебя ещё нет тикеров!/You do not have tikers yet',
                                  reply_markup=markupAdd)
             else:
@@ -118,10 +118,14 @@ def bot_message(message):
             bot.send_message(message.chat.id, 'Введи название тикера, который необходимо удалить',
                              reply_markup=markupBack)
 
+
+
+
+
         else:
             if main.check_tiker(message.text):
                 tikers_semaphore.acquire(blocking=True, timeout=0.5)
-                users_df = users.add_user_tiker(users_df, message.from_user.id, message.text)
+                users.add_user_tiker(message.from_user.id, message.text)
                 tikers_semaphore.release()
 
 
