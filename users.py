@@ -10,7 +10,7 @@ def add_user_tiker(id: int, tiker: str):
         users_df = users_df.append({'id': id, 'tikers': tiker}, ignore_index=True)
     else:
         users_df.loc[users_df['id'] == id, 'tikers'] = \
-            check_include_tiker(get_user_tikers(id), tiker)
+            add_tiker_to_str(get_user_tikers(id), tiker)
     print(users_df)
     save_csv()
     return users_df
