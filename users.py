@@ -22,9 +22,34 @@ def check_include_tiker(user_tikers: str, tiker: str):
         if tiker == old_tiker:
             flag = False
             break
-    if flag:
+    return flag
+
+
+def add_tiker_to_str(user_tikers: str, tiker: str):
+    if check_include_tiker(user_tikers, tiker):
         user_tikers += ',' + tiker
     return user_tikers
+
+
+def delete_tiker_from_str(id: int, tiker: str, user_tikers: str):
+    if check_include_tiker(get_user_tikers(id), tiker):
+        return 'Такого тикера нет!'
+    else:
+        for need_tiker in user_tikers.split(','):
+            if tiker != need_tiker:
+                user_tikers += tiker
+
+
+def build_menu(buttons, n_cols, user_tikers: str):
+    count_tikers = 0
+    for tiker in user_tikers.split(','):
+        count_tikers += 1
+
+    menu = [buttons[i:i + n_cols] for i in range(0, count_tikers, n_cols)]
+
+
+#     тут мы должны получить от пользователя значение переменной tiker, чтобы направить его в функцию
+# delete_tiker_from_str, в которой он удалится
 
 
 def save_csv():
