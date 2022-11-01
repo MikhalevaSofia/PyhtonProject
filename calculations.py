@@ -6,6 +6,7 @@
 import apimoex
 import pandas as pd
 import requests
+from matplotlib import pyplot as plt
 
 
 def check_tiker(tiker):
@@ -21,7 +22,7 @@ def check_tiker(tiker):
 
 def get_calculation(tiker):
     with requests.Session() as session:
-        data = apimoex.get_board_history(session, tiker, start='2020-08-11', end='2022-08-11',
+        data = apimoex.get_board_history(session, tiker, start='2022-08-11', end='2022-09-11',
                                          columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
         df = pd.DataFrame(data)
     if df.empty:
@@ -75,9 +76,10 @@ def get_calculation(tiker):
     cross_d_df = cross_d(calc['d'], 7)
     calc['buyD'] = cross_d_df['buy']
     calc['sellD'] = cross_d_df['sell']
-
+    picture_of_close_price(calc)
     print(calc)
     return 'Расчёты готовы!'
+
 
 def calc_simple_moving_average(x, days):
     sma_df = pd.DataFrame({'data': []})
@@ -293,6 +295,40 @@ def cross_d(x, days):
     return d_df
 
 
+def picture_of_close_price(calc: pd.DataFrame):
+    fig, ax = plt.subplots()
+    ax.set_title('График изменения цен закрытия акций')
+    ax.set_xlabel('Дата')
+    ax.set_ylabel('Цена')
+    ax.legend(['Цена закрытия'])
+    ax.plot(calc['date'], calc['close'])
+    ax.autofmt_xdate(rotation=90)
+    plt.grid(True)
+    fig.savefig('Цена закрытия.png')
+
+# def picture_of_sma(calc: pd.DataFrame):
+#     fig, ax = plt.subplots()
+#     ax.set_title('График скользящих средних')
+#     ax.set_xlabel('Дата')
+#     ax.set_ylabel('Цена')
+#     fig1 = plt.figure()
+#
+#     # plt.plot(calc['date'], calc['close'])
+#     #
+#     # plt.plot(calc['7 days'])
+#     # plt.plot(calc['14 days'])
+#     # plt.plot(calc['21 days'])
+#     # plt.plot(calc['date'], calc['cross1'], 'ro', color='red')
+#     # plt.plot(calc['date'], calc['cross2'], 'ro', color='red')
+#     # plt.plot(calc['date'], calc['cross3'], 'ro', color='red')
+#     # fig1.legend(['Цена закрытия', '7 дней', '14 дней', '21 день', 'Сигналы на покупку/продажу'])
+#     # fig1.autofmt_xdate()
+#     # fig1.show()
+#     ax.legend([''])
+#     ax.fmt_xdata = DateFormatter('% m-% d %')
+#     ax.plot(calc['date'], calc['close'])
+#     ax.autofmt_xdate()
+#     fig.savefig('Цена закрытия.png')
 
 # fig0 = plt.figure()
 #
