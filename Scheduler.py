@@ -9,7 +9,7 @@ import users
 
 def job():
     for row in users.users_df.itertuples():
-        for tiker in user_tikers.split(','):
+        for tiker in row.tikers.split(','):
             print(calculations.get_calculation(tiker))
 
 
