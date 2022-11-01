@@ -8,6 +8,8 @@ import pandas as pd
 import requests
 from matplotlib import pyplot as plt
 
+plt.rcParams['font.size'] = '8'
+
 
 def check_tiker(tiker):
     with requests.Session() as session:
@@ -306,8 +308,9 @@ def picture_of_close_price(calc: pd.DataFrame):
     plt.grid(True)
     fig.savefig('Цена закрытия.png')
 
-# def picture_of_sma(calc: pd.DataFrame):
-#     fig, ax = plt.subplots()
+
+def picture_of_sma(calc: pd.DataFrame):
+    fig, ax = plt.subplots()
 #     ax.set_title('График скользящих средних')
 #     ax.set_xlabel('Дата')
 #     ax.set_ylabel('Цена')
