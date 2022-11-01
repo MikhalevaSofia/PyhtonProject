@@ -4,7 +4,7 @@ import pandas as pd
 import telebot
 from telebot import types
 
-import main
+import calculations
 import users
 
 tikers_semaphore = Semaphore(value=1)
@@ -123,7 +123,7 @@ def bot_message(message):
 
 
         else:
-            if main.check_tiker(message.text):
+            if calculations.check_tiker(message.text):
                 tikers_semaphore.acquire(blocking=True, timeout=0.5)
                 users.add_user_tiker(message.from_user.id, message.text)
                 tikers_semaphore.release()
