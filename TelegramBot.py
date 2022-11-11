@@ -6,6 +6,7 @@ from telebot import types
 
 import calculations
 import users
+import Scheduler
 
 tikers_semaphore = Semaphore(value=1)
 
