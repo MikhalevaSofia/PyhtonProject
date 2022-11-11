@@ -13,10 +13,10 @@ def job():
             print(calculations.get_calculation(tiker))
 
 
-schedule.every().day.at('10:30').do(job)
+# schedule.every().day.at('10:30').do(job)
 
 
-# schedule.every().seconds.do(job)
+schedule.every().seconds.do(job)
 
 def sched():
     while True:

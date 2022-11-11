@@ -78,7 +78,8 @@ def get_calculation(tiker):
     cross_d_df = cross_d(calc['d'], 7)
     calc['buyD'] = cross_d_df['buy']
     calc['sellD'] = cross_d_df['sell']
-    picture_of_close_price(calc)
+    picture_of_close_price(calc, tiker)
+    picture_of_k_and_r(calc, tiker)
     print(calc)
     return 'Расчёты готовы!'
 
@@ -375,7 +376,7 @@ def picture_of_rsi(calc: pd.DataFrame):
     fig.savefig('График RSI.png')
 
 
-def picture_of_k_and_r(calc: pd.DataFrame):
+def picture_of_k_and_r(calc: pd.DataFrame, tiker: str):
     fig, ax = plt.subplots()
     ax.set_title('График стохастических линий: %K и %R')
     ax.set_xlabel('Дата')
@@ -387,7 +388,8 @@ def picture_of_k_and_r(calc: pd.DataFrame):
     ax.legend(['%K', '%R', 'Сигналы на покупку', 'Сигналы на продажу'])
     ax.autofmt_xdate(rotation=90)
     plt.grid(True)
-    fig.savefig('График стохастических линий: %K и %R.png')
+    fig.savefig(f'resources/Figure/{tiker}/График стохастических линий: %K и %R.png')
+    print('Я сохранил! k_and_r')
 
 
 def picture_of_d(calc: pd.DataFrame):
