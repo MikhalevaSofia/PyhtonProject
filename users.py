@@ -66,11 +66,10 @@ def load_from_csv():
 
 
 def check_picture_of_tiker(tiker):
-    for file in os.path.isfile(f'resources/Figure'):
-        if file.startswitch(tiker):
+    for file in os.listdir('./resources/Figure/'):
+        if file.startswith(tiker):
             return True
-        else:
-            return False
+    return False
 
 
 def get_user_tikers(id: int):

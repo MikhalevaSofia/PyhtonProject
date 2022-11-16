@@ -9,6 +9,8 @@ import requests
 import matplotlib
 from matplotlib import pyplot as plt
 
+import users
+
 plt.rcParams['font.size'] = '8'
 plt.switch_backend('Agg')
 
@@ -25,7 +27,7 @@ def check_tiker(tiker):
 
 
 def get_calculation(tiker):
-    if users.check_picture_of_tiker(tiker) == False:
+    if not users.check_picture_of_tiker(tiker):
         with requests.Session() as session:
             data = apimoex.get_board_history(session, tiker, start='2022-07-11', end='2022-09-11',
                                              columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
@@ -319,6 +321,8 @@ def picture_of_close_price(calc: pd.DataFrame, tiker: str):
     plt.grid(True)
     fig.savefig(f'resources/Figure/{tiker}_Цена закрытия.png')
 
+    print('Я сохранил! close', tiker)
+
 
 def picture_of_sma(calc: pd.DataFrame, tiker: str):
     fig, ax = plt.subplots()
@@ -328,13 +332,15 @@ def picture_of_sma(calc: pd.DataFrame, tiker: str):
     ax.plot(calc['7 days'])
     ax.plot(calc['14 days'])
     ax.plot(calc['21 days'])
-    ax.plot(calc['date'], calc['cross1'], 'ro', color='red')
-    ax.plot(calc['date'], calc['cross2'], 'ro', color='red')
-    ax.plot(calc['date'], calc['cross3'], 'ro', color='red')
+    ax.plot(calc['date'], calc['cross1'], 'ro')
+    ax.plot(calc['date'], calc['cross2'], 'ro')
+    ax.plot(calc['date'], calc['cross3'], 'ro')
     ax.legend(['Цена закрытия', '7 дней', '14 дней', '21 день', 'Сигналы на покупку/продажу'])
     fig.autofmt_xdate(rotation=90)
     plt.grid(True)
     fig.savefig(f'resources/Figure/{tiker}_График скоьзящих средних.png')
+
+    print('Я сохранил! sma', tiker)
 
 
 def picture_of_mom(calc: pd.DataFrame, tiker: str):
@@ -344,12 +350,14 @@ def picture_of_mom(calc: pd.DataFrame, tiker: str):
     ax.set_ylabel('Прирост')
     ax.plot(calc['date'], calc['mom'])
     ax.plot(calc['date'], calc['line0'])
-    ax.plot(calc['date'], calc['buyMom'], 'ro', color='red')
-    ax.plot(calc['date'], calc['sellMom'], 'ro', color='blue')
+    ax.plot(calc['date'], calc['buyMom'], 'ro')
+    ax.plot(calc['date'], calc['sellMom'], 'bo')
     ax.legend(['MOM', 'Ось симметрии', 'Сигналы на покупку', 'Сигналы на продажу'])
     fig.autofmt_xdate(rotation=90)
     plt.grid(True)
     fig.savefig(f'resources/Figure/{tiker}_График MOM.png')
+
+    print('Я сохранил! mom ', tiker)
 
 
 def picture_of_roc(calc: pd.DataFrame, tiker: str):
@@ -364,6 +372,8 @@ def picture_of_roc(calc: pd.DataFrame, tiker: str):
     plt.grid(True)
     fig.savefig(f'resources/Figure/{tiker}_График ROC.png')
 
+    print('Я сохранил! roc ', tiker)
+
 
 def picture_of_rsi(calc: pd.DataFrame, tiker: str):
     fig, ax = plt.subplots()
@@ -373,10 +383,10 @@ def picture_of_rsi(calc: pd.DataFrame, tiker: str):
     ax.plot(calc['date'], calc['rsi'])
     ax.plot(calc['date'], calc['line75'])
     ax.plot(calc['date'], calc['line25'])
-    ax.plot(calc['date'], calc['buyRsiS'], 'ro', color='red')
-    ax.plot(calc['date'], calc['sellRsiS'], 'ro', color='blue')
-    ax.plot(calc['date'], calc['buyRsiW'], 'ro', color='darkred')
-    ax.plot(calc['date'], calc['sellRsiW'], 'ro', color='navy')
+    ax.plot(calc['date'], calc['buyRsiS'], 'ro')
+    ax.plot(calc['date'], calc['sellRsiS'], 'bo')
+    ax.plot(calc['date'], calc['buyRsiW'], 'o', color='darkred')
+    ax.plot(calc['date'], calc['sellRsiW'], 'o', color='navy')
     ax.legend(
         ['RSI', 'Зона перекупленности', 'Зона перепроданности', 'Сильные сигналы на покупку',
          'Сильные сигналы на продажу',
@@ -385,32 +395,37 @@ def picture_of_rsi(calc: pd.DataFrame, tiker: str):
     plt.grid(True)
     fig.savefig(f'resources/Figure/{tiker}_График RSI.png')
 
+    print('Я сохранил! rsi', tiker)
+
 
 def picture_of_k_and_r(calc: pd.DataFrame, tiker: str):
     fig, ax = plt.subplots()
-    ax.set_title('График стохастических линий: %K и %R')
+    ax.set_title('График стохастических линий K и R')
     ax.set_xlabel('Дата')
     ax.set_ylabel('Процент')
     ax.plot(calc['date'], calc['k'])
     ax.plot(calc['date'], calc['r'])
-    ax.plot(calc['date'], calc['buyKR'], 'ro', color='red')
-    ax.plot(calc['date'], calc['sellKR'], 'ro', color='blue')
+    ax.plot(calc['date'], calc['buyKR'], 'ro')
+    ax.plot(calc['date'], calc['sellKR'], 'bo')
     ax.legend(['%K', '%R', 'Сигналы на покупку', 'Сигналы на продажу'])
     fig.autofmt_xdate(rotation=90)
     plt.grid(True)
-    fig.savefig(f'resources/Figure/{tiker}_График стохастических линий: %K и %R.png')
-    print('Я сохранил! k_and_r')
+    fig.savefig(f'resources/Figure/{tiker}_График стохастических линий K и R.png')
+
+    print('Я сохранил! k_and_r', tiker)
 
 
 def picture_of_d(calc: pd.DataFrame, tiker: str):
     fig, ax = plt.subplots()
-    ax.set_title('График стохастических линий: %D')
+    ax.set_title('График стохастических линий D')
     ax.set_xlabel('Дата')
     ax.set_ylabel('Процент')
     ax.plot(calc['date'], calc['d'])
-    ax.plot(calc['date'], calc['buyD'], 'ro', color='red')
-    ax.plot(calc['date'], calc['sellD'], 'ro', color='blue')
+    ax.plot(calc['date'], calc['buyD'], 'ro')
+    ax.plot(calc['date'], calc['sellD'], 'bo')
     ax.legend(['%D', 'Сигналы на покупку', 'Сигналы на продажу'])
     fig.autofmt_xdate(rotation=90)
     plt.grid(True)
-    fig.savefig(f'resources/Figure/{tiker}_График стохастических линий: %D.png')
+    fig.savefig(f'resources/Figure/{tiker}_График стохастических линий D.png')
+
+    print('Я сохранил! d ', tiker)
