@@ -40,16 +40,7 @@ def delete_tiker_from_str(id: int, tiker: str, user_tikers: str):
                 user_tikers += tiker
 
 
-def build_menu(buttons, n_cols, user_tikers: str):
-    count_tikers = 0
-    for tiker in user_tikers.split(','):
-        count_tikers += 1
 
-    menu = [buttons[i:i + n_cols] for i in range(0, count_tikers, n_cols)]
-
-
-#     тут мы должны получить от пользователя значение переменной tiker, чтобы направить его в функцию
-# delete_tiker_from_str, в которой он удалится
 
 
 def save_csv():

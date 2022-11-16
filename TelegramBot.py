@@ -43,23 +43,6 @@ markupRemove = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 )
 
 
-# def check_tiker_in_str(users_df: pd.DataFrame, user_tikers: str, tiker: str):
-#     new_user_tikers = ''
-#     c = 0
-#     for need_tiker in user_tikers.split(','):
-#
-#         if tiker == need_tiker:
-#             c += 1
-#     if c > 0:
-#
-#         for need_tiker in user_tikers.split(','):
-#             if tiker != need_tiker:
-#                 new_user_tikers += tiker
-#
-#     else:
-#         bot.send.message(message.chat.id, 'Такого тикера нет!', reply_markup=markupAdd)
-#         new_user_tikers = user_tikers
-#     return new_user_tikers
 
 
 @bot.message_handler(commands=['start'])
@@ -74,10 +57,7 @@ def start(message):
                      )
 
 
-# @bot.message_handler(func=lambda message: True)
-# def echo_all(message):
-#     bot.reply_to(message, message.text)
-#     bot.send_message(chat_id=message.chat.id, text="Сигнал")
+
 
 @bot.message_handler(content_types=['text'])
 def bot_message(message):
@@ -129,5 +109,8 @@ def bot_message(message):
                 users.add_user_tiker(message.from_user.id, message.text)
                 tikers_semaphore.release()
 
+
+def send_picture(id: int, path: str):
+    bot.send_photo(id, photo=open(path, 'rb'))
 
 bot.polling(none_stop=True)
