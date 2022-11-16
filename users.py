@@ -65,6 +65,14 @@ def load_from_csv():
     return pd.DataFrame(columns=['id', 'tikers'])
 
 
+def check_picture_of_tiker(tiker):
+    for file in os.path.isfile(f'resources/Figure'):
+        if file.startswitch(tiker):
+            return True
+        else:
+            return False
+
+
 def get_user_tikers(id: int):
     global users_df
     if users_df.empty or users_df.loc[users_df['id'] == id].empty:

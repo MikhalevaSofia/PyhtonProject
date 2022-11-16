@@ -12,6 +12,7 @@ from matplotlib import pyplot as plt
 plt.rcParams['font.size'] = '8'
 plt.switch_backend('Agg')
 
+
 def check_tiker(tiker):
     with requests.Session() as session:
         data = apimoex.get_board_history(session, tiker, start='2022-08-01', end='2022-08-11',
@@ -24,12 +25,15 @@ def check_tiker(tiker):
 
 
 def get_calculation(tiker):
-    with requests.Session() as session:
-        data = apimoex.get_board_history(session, tiker, start='2022-07-11', end='2022-09-11',
-                                         columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
-        df = pd.DataFrame(data)
-    if df.empty:
-        return 'Это не тикер!!'
+    if users.check_picture_of_tiker(tiker) == False:
+        with requests.Session() as session:
+            data = apimoex.get_board_history(session, tiker, start='2022-07-11', end='2022-09-11',
+                                             columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
+            df = pd.DataFrame(data)
+        if df.empty:
+            return 'Это не тикер!!'
+    else:
+        return pd.DataFrame()
 
     calc = pd.DataFrame()
     calc['close'] = df['CLOSE'].astype(float)
