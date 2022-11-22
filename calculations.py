@@ -92,6 +92,7 @@ def get_calculation(tiker):
     picture_of_rsi(calc, tiker)
     picture_of_k_and_r(calc, tiker)
     picture_of_d(calc, tiker)
+    plt.close('all')
     print(calc)
     return 'Расчёты готовы!'
 
