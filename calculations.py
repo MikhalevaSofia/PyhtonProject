@@ -26,10 +26,10 @@ def check_tiker(tiker):
             return True
 
 
-def get_calculation(tiker):
+def get_calculation(tiker: str, start: str, end: str):
     if not users.check_picture_of_tiker(tiker):
         with requests.Session() as session:
-            data = apimoex.get_board_history(session, tiker, start='2022-07-11', end='2022-09-11',
+            data = apimoex.get_board_history(session, tiker, start=start, end=end,
                                              columns=('CLOSE', 'LOW', 'HIGH', 'TRADEDATE'))
             df = pd.DataFrame(data)
         if df.empty:
@@ -330,6 +330,7 @@ def picture_of_sma(calc: pd.DataFrame, tiker: str):
     ax.set_title('График скользящих средних')
     ax.set_xlabel('Дата')
     ax.set_ylabel('Цена')
+    ax.plot(calc['close'])
     ax.plot(calc['7 days'])
     ax.plot(calc['14 days'])
     ax.plot(calc['21 days'])

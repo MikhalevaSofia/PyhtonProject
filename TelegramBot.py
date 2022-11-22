@@ -1,4 +1,5 @@
 from threading import Semaphore
+from dateutil.relativedelta import relativedelta
 from telebot import types
 from threading import Thread
 import pandas as pd
@@ -7,7 +8,7 @@ import calculations
 import users
 import time
 import schedule
-import pathlib
+import datetime
 import os
 
 tikers_semaphore = Semaphore(value=1)
@@ -45,8 +46,6 @@ markupRemove = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 )
 
 
-
-
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), reply_markup=markupStart)
@@ -57,8 +56,6 @@ def start(message):
     bot.send_message(message.chat.id,
                      'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.'
                      )
-
-
 
 
 @bot.message_handler(content_types=['text'])
@@ -113,19 +110,21 @@ def bot_message(message):
 
 
 def job():
+    date_now = datetime.date.today()
     for file in os.listdir(dir_figure):
         if file.endswith('.png'):
             os.remove(os.path.join(dir_figure, file))
     print(f'Clear directory {dir_figure}')
     for row in users.users_df.itertuples():
         for tiker in row.tikers.split(','):
-            print(calculations.get_calculation(tiker))
+            print(calculations.get_calculation(tiker=tiker, end=str(date_now), \
+                                               start=str(date_now + relativedelta(months=-3))))
             send_pictures_to_users(row.id, tiker)
 
-    print('Finish calculations')
+            print('Finish calculations')
 
 
-schedule.every().day.at('19:03').do(job)
+schedule.every().day.at('19:47').do(job)
 
 
 # schedule.every().seconds.do(job)
