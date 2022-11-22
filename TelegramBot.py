@@ -4,12 +4,18 @@ import pandas as pd
 import telebot
 from telebot import types
 
+import time
+from threading import Thread
+
+import schedule
+
 import calculations
 import users
-import Scheduler
+import os
 
 tikers_semaphore = Semaphore(value=1)
 
+dir_figure = './resources/Figure/'
 token = '5576162699:AAEzBKzcfy-Eq4Vk4DinKZL9tFMWlIMBs6g'
 bot = telebot.TeleBot(token)
 df = pd.DataFrame()
@@ -43,8 +49,6 @@ markupRemove = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 )
 
 
-
-
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), reply_markup=markupStart)
@@ -55,8 +59,6 @@ def start(message):
     bot.send_message(message.chat.id,
                      'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.'
                      )
-
-
 
 
 @bot.message_handler(content_types=['text'])
@@ -98,11 +100,6 @@ def bot_message(message):
         elif message.text == 'Удалить тикер/Remove tiker':
             bot.send_message(message.chat.id, 'Введи название тикера, который необходимо удалить',
                              reply_markup=markupBack)
-
-
-
-
-
         else:
             if calculations.check_tiker(message.text):
                 tikers_semaphore.acquire(blocking=True, timeout=0.5)
@@ -110,7 +107,40 @@ def bot_message(message):
                 tikers_semaphore.release()
 
 
-def send_picture(id: int, path: str):
-    bot.send_photo(id, photo=open(path, 'rb'))
+def job():
+    for file in os.listdir(dir_figure):
+        if file.endswith('.png'):
+            os.remove(os.path.join(dir_figure, file))
+    print(f'Clear directory {dir_figure}')
+    for row in users.users_df.itertuples():
+        for tiker in row.tikers.split(','):
+            print(calculations.get_calculation(tiker))
+            send_pictures_to_users(row.id, tiker)
+
+    print('Finish calculations')
+
+
+schedule.every().day.at('18:33').do(job)
+
+
+# schedule.every().seconds.do(job)
+
+
+def sched():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+
+thread = Thread(target=sched)
+thread.start()
+
+
+def send_pictures_to_users(id: int, tiker: str):
+    bot.send_message(id, tiker)
+    for file in os.listdir(dir_figure):
+        if file.startswith(tiker):
+            bot.send_photo(id, photo=open(f'{dir_figure}{file}', 'rb'))
+
 
 bot.polling(none_stop=True)
