@@ -21,7 +21,6 @@ print('Я работаю!')
 markupStart = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
     types.KeyboardButton('Тикеры MOEX/Tikers of MOEX'),
     types.KeyboardButton('Информация обо мне/Information about me'),
-    types.KeyboardButton('Анекдот (опция только на русском)'),
     types.KeyboardButton('Мои тикеры MOEX/My MOEX tikers')
 )
 markupTikers = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
@@ -40,21 +39,22 @@ markupAdd = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
     types.KeyboardButton('Добавить тикер/Add tiker'),
     types.KeyboardButton('Назад/Back')
 )
-markupRemove = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
-    types.KeyboardButton('Удалить тикер/Remove tiker'),
-    types.KeyboardButton('Назад/Back')
-)
+
 
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), reply_markup=markupStart)
+    bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), \
+                     reply_markup=markupStart)
     bot.send_message(message.chat.id,
-                     'Меня зовут Traider`s Assistant. Я твой бот-помощник в осуществлении торгов на Московской бирже. Для получения информации ты можешь воcпользоваться подсказками ниже.')
+                     'Меня зовут Traider`s Assistant. Я твой бот-помощник в осуществлении \
+                     торгов на Московской бирже. Для получения информации ты можешь \
+                     воcпользоваться подсказками ниже.')
 
     bot.send_message(message.chat.id, 'Hey, {0.first_name}! '.format(message.from_user))
     bot.send_message(message.chat.id,
-                     'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. If you need more information, you can use the tips below.'
+                     'My name`s Traider`s Assistant. I`m your bot assistant in traiding on the MOEX. \
+                     If you need more information, you can use the tips below.'
                      )
 
 
@@ -68,16 +68,17 @@ def bot_message(message):
 
             bot.send_message(message.chat.id, 'Информация обо мне/Information about me')
             bot.send_message(message.chat.id,
-                             'Как я уже сказал, я буду помогать тебе торговать на московской бирже: покажу тебе изменение котировок, расскажу, когда лучше купить/продать твои акции, а также построю графики инструментов технического анализа, которые помогут тебе распознать достоверность отправленного мной сигнала')
+                             'Как я уже сказал, я буду помогать тебе торговать на московской\
+                              бирже: покажу тебе изменение котировок, расскажу, когда лучше купить/продать \
+                              твои акции, а также построю графики инструментов технического анализа, которые\
+                               помогут тебе распознать достоверность отправленного мной сигнала')
             bot.send_message(message.chat.id,
-                             'As I said, I will help you trade on the MOEX: I will show you the change in quotations, tell you when it is better to buy/ sell your shares, and also build graphs of technical analysis tools that will help you recognize the reliability of the signal I sent',
+                             'As I said, I will help you trade on the MOEX: I will \
+                             show you the change in quotations, tell you when it is better\
+                              to buy/ sell your shares, and also build graphs of technical \
+                              analysis tools that will help you recognize the reliability of the signal I sent',
                              reply_markup=markupBack)
-        elif message.text == 'Анекдот (опция только на русском)':
-            bot.send_message(message.chat.id, 'Анекдот (опция только на русском)')
-            bot.send_message(message.chat.id, 'Беседуют две блондинки:'
-                                              '— Как ты могла при всех назвать меня дурой?'
-                                              '— Извини, ты же не предупредила, что скрываешь.',
-                             reply_markup=markupBack)
+
         elif message.text == 'Назад/Back':
             bot.send_message(message.chat.id, 'Назад/Back', reply_markup=markupStart)
         elif message.text == 'Другое/Other':
