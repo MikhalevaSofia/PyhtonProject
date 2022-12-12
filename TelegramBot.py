@@ -95,9 +95,7 @@ def bot_message(message):
             tikers_semaphore.release()
         elif message.text == 'Добавить тикер/Add tiker':
             bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markupTikers)
-        elif message.text == 'Удалить тикер/Remove tiker':
-            bot.send_message(message.chat.id, 'Введи название тикера, который необходимо удалить',
-                             reply_markup=markupBack)
+
 
 
 
