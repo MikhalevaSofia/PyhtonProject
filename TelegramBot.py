@@ -88,9 +88,9 @@ def bot_message(message):
             if users.get_user_tikers(message.chat.id) == '':
                 bot.send_message(message.chat.id, 'У тебя ещё нет тикеров!/ You do not have tikers yet',
                                  reply_markup=markupAdd)
-            else:
-                bot.send_message(message.chat.id, users.get_user_tikers(message.chat.id),
-                                 reply_markup=markupRemove)
+            # else:
+            #  bot.send_message(message.chat.id, users.get_user_tikers(message.chat.id),
+            #                reply_markup=markupRemove)
 
             tikers_semaphore.release()
         elif message.text == 'Добавить тикер/Add tiker':
@@ -123,7 +123,7 @@ def job():
             print('Finish calculations')
 
 
-schedule.every().day.at('19:47').do(job)
+schedule.every().day.at('10:30').do(job)
 
 
 # schedule.every().seconds.do(job)
