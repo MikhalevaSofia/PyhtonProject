@@ -41,7 +41,6 @@ markupAdd = types.ReplyKeyboardMarkup(resize_keyboard=True).add(
 )
 
 
-
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.chat.id, 'Привет, {0.first_name}!'.format(message.from_user), \
@@ -88,24 +87,21 @@ def bot_message(message):
             if users.get_user_tikers(message.chat.id) == '':
                 bot.send_message(message.chat.id, 'У тебя ещё нет тикеров!/ You do not have tikers yet',
                                  reply_markup=markupAdd)
-            # else:
-            #  bot.send_message(message.chat.id, users.get_user_tikers(message.chat.id),
-            #                reply_markup=markupRemove)
+            else:
+                bot.send_message(message.chat.id, users.get_user_tikers(message.chat.id),
+                                 reply_markup=markupAdd)
 
             tikers_semaphore.release()
         elif message.text == 'Добавить тикер/Add tiker':
             bot.send_message(message.chat.id, 'Тикеры MOEX/Tikers of MOEX', reply_markup=markupTikers)
-
-
-
-
-
-
         else:
             if calculations.check_tiker(message.text):
                 tikers_semaphore.acquire(blocking=True, timeout=0.5)
                 users.add_user_tiker(message.from_user.id, message.text)
                 tikers_semaphore.release()
+                bot.send_message(message.chat.id, 'Тикер добавлен!', reply_markup=markupStart)
+            else:
+                bot.send_message(message.chat.id, 'Это не тикер!', reply_markup=markupStart)
 
 
 def job():
